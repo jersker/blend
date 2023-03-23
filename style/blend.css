@@ -129,6 +129,17 @@ section {
   background: #1e1e1e;
   color: lightgray;
 }
+div.landing_button {
+  cursor: pointer;
+  width: 200px;
+  background-color: #9529f9;
+  border: 1px solid #9529f9;
+  border-radius: 8px;
+  margin: 0 auto;
+  padding: 1em;
+  text-align: center;
+  z-index: 1;
+}
 section#blend_page {
   height: 100svh;
   color: #222;
@@ -184,15 +195,6 @@ section#blend_page div.landing_box h2 {
 }
 section#blend_page div.landing_box p {
   color: lightgray;
-}
-section#blend_page div.landing_box div#landing_button {
-  cursor: pointer;
-  width: 200px;
-  background-color: #9529f9;
-  border: 1px solid #9529f9;
-  border-radius: 8px;
-  margin: 0 auto;
-  padding: 1em;
 }
 section#blend_page div#blend_animation {
   user-select: none;
@@ -701,6 +703,9 @@ section#colors_section div.palette_container div.palette .color {
     column-gap: calc(1em * 3);
     flex-direction: row;
   }
+  section#blend_page div#landing_button_mobile {
+    display: none;
+  }
   section#blend_page div.landing_box {
     width: 50%;
   }
@@ -750,6 +755,12 @@ section#colors_section div.palette_container div.palette .color {
   section#blend_page {
     flex-direction: column;
   }
+  section#blend_page div#landing_button_desktop {
+    display: none;
+  }
+  section#blend_page div#landing_button_mobile {
+    margin: 2rem 0;
+  }
   section#blend_page div.landing_box {
     width: 70%;
   }
@@ -782,6 +793,12 @@ section#colors_section div.palette_container div.palette .color {
 @media only screen and (max-width: 650px) {
   section#blend_page {
     flex-direction: column;
+  }
+  section#blend_page div#landing_button_desktop {
+    display: none;
+  }
+  section#blend_page div#landing_button_mobile {
+    margin: 2rem 0;
   }
   section#blend_page div.landing_box {
     width: 100%;

@@ -149,6 +149,18 @@ section {
     color:lightgray;
 }
 
+div.landing_button {
+    cursor:pointer;
+    width:200px;
+    background-color:@blend_color_two;
+    border:1px solid @blend_color_two;
+    border-radius:@main_radius;
+    margin:0 auto;
+    padding:@main_padding;
+    text-align:center;
+    z-index:1;
+}
+
 section#blend_page {
     height:100svh;
     color:#222;
@@ -218,16 +230,6 @@ section#blend_page {
         
         p {
             color:lightgray;
-        }
-        
-        div#landing_button {
-            cursor:pointer;
-            width:200px;
-            background-color:@blend_color_two;
-            border:1px solid @blend_color_two;
-            border-radius:@main_radius;
-            margin:0 auto;
-            padding:@main_padding;
         }
     }
     
@@ -851,6 +853,10 @@ section#colors_section {
 
         flex-direction:row;
 
+        div#landing_button_mobile {
+            display:none;
+        }
+
         div.landing_box {
             width:50%;
         }
@@ -917,7 +923,17 @@ section#colors_section {
 
 @media only screen and (max-width:959px) {
     section#blend_page {
+
         flex-direction:column;
+
+        div#landing_button_desktop {
+            display:none;
+        }
+
+        div#landing_button_mobile {
+            margin:2rem 0;
+        }
+
         div.landing_box {
             width:70%;
         }
@@ -964,6 +980,14 @@ section#colors_section {
     section#blend_page {
 
         flex-direction:column;
+
+        div#landing_button_desktop {
+            display:none;
+        }
+
+        div#landing_button_mobile {
+            margin:2rem 0;
+        }
 
         div.landing_box {
             width:100%;
