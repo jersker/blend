@@ -807,7 +807,7 @@ section#colors_section div.palette_container div.palette .color {
     display: none;
   }
   section#blend_page div#blend_animation {
-    width: 100%;
+    width: 90%;
   }
   section#blend_page div#desktop_bg {
     display: none;
