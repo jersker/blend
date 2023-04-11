@@ -22,7 +22,7 @@ display their corresponding palettes.
     <td>
     </td>
     <td>
-        <img src="readme-display/gradient-palette.png" />
+        <img src="readme-display/blend-palette.png" />
     </td>
 </tr>
 </table>
