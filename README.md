@@ -11,23 +11,23 @@ display their corresponding palettes.
 ## Sample Output
 
 <table>
-<tr>
-<th rowspan="3">
-<div style="background-color:#dad357">
-<img src="readme-display/active-color.png" />
-</div>
-</th>
-<td>HEX:</td>
-<td>#DAD357</td>
-</tr>
-<tr>
-<td>RGB:</td>
-<td>218, 211, 87</td>
-</tr>
-<tr>
-<td>CMYK:</td>
-<td>0, 3, 60, 15</td>
-</tr>
+    <tr>
+        <th rowspan="3">
+        <div style="background-color:#dad357">
+        <img width="40px" src="readme-display/active-color.png" />
+        </div>
+        </th>
+        <td>HEX:</td>
+        <td>#DAD357</td>
+    </tr>
+    <tr>
+        <td>RGB:</td>
+        <td>218, 211, 87</td>
+    </tr>
+    <tr>
+        <td>CMYK:</td>
+        <td>0, 3, 60, 15</td>
+    </tr>
 </table>
 
 ## Search Tab
