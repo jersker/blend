@@ -17,5 +17,7 @@ Do one of the following:
 
 #### Valid Inputs
 > DAD
+<br>
 > DAD357
-> <u>255</u>, <u>255</u>, <u>255</u>
+<br>
+> <span style="text-decoration: underline">255</span>, <span style="text-decoration: underline">255</span>, <span style="text-decoration: underline">255</span>
