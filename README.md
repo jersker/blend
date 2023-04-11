@@ -7,15 +7,24 @@ Search colors and create gradients.
 
 ---
 
-## To Use:
+## Search Tab
+Enter one color code with either of the following formats:
 
-### Search Tab
-Do one of the following:
+- 3 or 6 character hexadecimal value (charactera 0-9 and A-F).
+- Individual red, green, and blue values (integers 0-255).
 
-- Enter a 3 or 6 character hexadecimal value (charactera 0-9 and A-F).
-- Enter individual red, green, and blue values (integers 0-255).
-
-#### Valid Inputs
+#### Example
 > `DAD`  
 > `DAD357`  
 > `255`, `255`, `255`
+
+## Blend Tab
+Enter two color codes with either of the following formats:
+
+- 3 or 6 character hexadecimal value (charactera 0-9 and A-F).
+- Individual red, green, and blue values (integers 0-255).
+
+#### Example
+> `DAD` and `DAD357`  
+> `255`, `255`, `255` and `FFFEEE`
+> `110`, `120`, `130` and `255`, `255`, `255`
