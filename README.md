@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-<h1 align="center">BLEND.js</h1>
-=======
 <div align="center">
->>>>>>> 9821543 (Updated README)
 
 # BLEND.js
 Search colors and create gradients.
