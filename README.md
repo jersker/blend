@@ -10,7 +10,7 @@ display their corresponding palettes.
 
 ## Sample Output
 
-<table>
+<table border="none">
 <tr>
     <td>
         <img src="readme-display/search-input.png" />
