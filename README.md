@@ -10,10 +10,25 @@ display their corresponding palettes.
 
 ## Sample Output
 
-| ------------- | ------------- |
-| HEX: | #DAD357 |
-| RGB: | 218, 211, 87 |
-| CMYK: | 0, 3, 60, 15 |
+<table>
+<tr>
+<th rowspan="3">
+<div style="background-color:#dad357">
+.
+</div>
+</th>
+<td>HEX:</td>
+<td>#DAD357</td>
+</tr>
+<tr>
+<td>RGB:</td>
+<td>218, 211, 87</td>
+</tr>
+<tr>
+<td>CMYK:</td>
+<td>0, 3, 60, 15</td>
+</tr>
+</table>
 
 ## Search Tab
 Enter one color code with either of the following formats:
