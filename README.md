@@ -16,6 +16,6 @@ Do one of the following:
 - Enter individual red, green, and blue values (integers 0-255).
 
 #### Valid Inputs
-`DAD`  
-`DAD357`  
-`255`, `255`, `255`
+> `DAD`  
+> `DAD357`  
+> `255`, `255`, `255`
