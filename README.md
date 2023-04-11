@@ -10,7 +10,22 @@ display their corresponding palettes.
 
 ## Sample Output
 
-<img src="readme-display/search-palette.png" />
+<table>
+<tr>
+    <td>
+    </td>
+    <td>
+        <img src="readme-display/search-palette.png" />
+    </td>
+</tr>
+<tr>
+    <td>
+    </td>
+    <td>
+        <img src="readme-display/gradient-palette.png" />
+    </td>
+</tr>
+</table>
 
 ## Search Tab
 Enter one color code with either of the following formats:
