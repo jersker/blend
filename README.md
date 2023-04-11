@@ -26,5 +26,5 @@ Enter two color codes with either of the following formats:
 
 #### Example
 > `DAD` and `DAD357`  
-> `255`, `255`, `255` and `FFFEEE`
-> `110`, `120`, `130` and `255`, `255`, `255`
+> `255`, `255`, `255` and `FFFEEE`  
+> `110`, `120`, `130` and `255`, `255`, `255`  
