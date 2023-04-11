@@ -765,6 +765,19 @@ function start() {
             });
         });
     });
+
+    let landing_button = document.querySelectorAll("div.landing_button");
+    const blend_page = document.getElementById("blend_page");
+
+    landing_button.forEach(button => {
+        button.addEventListener("click", function() {
+            let scroll_y = blend_page.offsetHeight;
+            window.scroll({
+                top: scroll_y,
+                behavior: 'smooth'
+            });
+        });
+    });
 }
 
 start();
