@@ -10,6 +10,8 @@ display their corresponding palettes.
 
 ## Sample Output
 
+|  |  |
+| ------------- | ------------- |
 | HEX: | #DAD357 |
 | RGB: | 218, 211, 87 |
 | CMYK: | 0, 3, 60, 15 |
