@@ -13,13 +13,15 @@ display their corresponding palettes.
 <table>
 <tr>
     <td>
+        <img src="readme-display/search-input.png" />
     </td>
     <td>
-        <img src="readme-display/search-palette.png" />
+        <img src="readme-display/blend-input.png" />
     </td>
 </tr>
 <tr>
     <td>
+        <img src="readme-display/search-palette.png" />
     </td>
     <td>
         <img src="readme-display/blend-palette.png" />
