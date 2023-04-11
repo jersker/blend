@@ -8,27 +8,6 @@ display their corresponding palettes.
 
 ---
 
-## Sample Output
-
-<table border="none">
-<tr>
-    <td>
-        <img src="readme-display/search-input.png" />
-    </td>
-    <td>
-        <img src="readme-display/blend-input.png" />
-    </td>
-</tr>
-<tr>
-    <td>
-        <img src="readme-display/search-palette.png" />
-    </td>
-    <td>
-        <img src="readme-display/blend-palette.png" />
-    </td>
-</tr>
-</table>
-
 ## Search Tab
 Enter one color code with either of the following formats:
 
@@ -40,6 +19,9 @@ Enter one color code with either of the following formats:
 > `DAD357`  
 > `255`, `255`, `255`
 
+<img src="readme-display/search-input.png" />
+<img src="readme-display/search-palette.png" />
+
 ## Blend Tab
 Enter two color codes with either of the following formats:
 
@@ -50,6 +32,9 @@ Enter two color codes with either of the following formats:
 > `DAD` and `DAD357`  
 > `255`, `255`, `255` and `FFFEEE`  
 > `110`, `120`, `130` and `255`, `255`, `255`  
+
+<img src="readme-display/blend-input.png" />
+<img src="readme-display/blend-palette.png" />
 
 ## Random Tab
 This tab can be used to generate either a single random color with a corresponding 
