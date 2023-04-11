@@ -14,7 +14,7 @@ display their corresponding palettes.
 <tr>
 <th rowspan="3">
 <div style="background-color:#dad357">
-.
+<img src="readme-display/active-color.png" />
 </div>
 </th>
 <td>HEX:</td>
