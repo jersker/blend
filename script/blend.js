@@ -10,13 +10,15 @@ document.addEventListener("DOMContentLoaded", function(event) {
 // hexadecimal value
 function hex_rand() {
 	let hex = "";
-	const hex_values = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
-		"A", "B", "C", "D", "E", "F"];
+	const hex_values = [ 
+        "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+		"A", "B", "C", "D", "E", "F" 
+    ];
 
-	for (let i = 0; i < 6; i++) {
-		let rand = Math.floor(Math.random() * 16);
+	for ( let i = 0; i < 6; i++ ) {
+		let rand = Math.floor( Math.random() * 16 );
         
-		hex += hex_values[rand];
+		hex += hex_values[ rand ];
 	}
 
 	return hex;
@@ -38,36 +40,17 @@ function rgb_to_hex(red, green, blue) {
     green = parseInt(green).toString(16);
     blue = parseInt(blue).toString(16);
     
-    if (red.length == 1) {
-        red = "0" + red
-    }
-    if (green.length == 1) {
-        green = "0" + green
-    }
-    if (blue.length == 1) {
-        blue = "0" + blue
-    }
-    
+    red.length == 1 && (red = "0" + red); 
+    green.length == 1 && (green = "0" + green); 
+    blue.length == 1 && (blue = "0" + blue); 
+
     return red + green + blue;
 }
 
 // // // // // // // // // //
-    
-function triadic_one(red, green, blue) {
-	return {
-        r : green,
-        g : blue,
-        b : red
-    };
-}
 
-function triadic_two(red, green, blue) {
-	return {
-        r : blue,
-        g : red,
-        b : green
-    };
-}
+const triadic_one = ( red, green, blue ) => ({r : green, g : blue, b : red});
+const triadic_two = ( red, green, blue ) => ({r : blue, g : red, b : green});
 
 function complement(red, green, blue) {
 	let r = 0;
@@ -75,89 +58,34 @@ function complement(red, green, blue) {
 	let b = 0;
 
 	//	red highest value
-	if (red > blue && red > green) {
-		//	yellow
-		if (green > blue) {
-			r = blue;
-			g = (red - green) + blue;
-			b = red;
-		}
-		//	magenta
-		if (blue > green) {
-			r = green;
-			g = red;
-			b = (red - blue) + green;
-		}
-		if (green == blue) {
-			r = green;
-			g = red;
-			b = red;
-		}
-	}
+    //	yellow and magenta
+    ( red > blue && red > green ) && (
+        green > blue && ( r = blue, g = ( red - green ) + blue, b = red ),
+        blue > green && ( r = green, g = red, b = ( red - blue ) + green ),
+        green == blue && ( r = green, g = red, b = red )
+    ); 
 	//	green highest value
-	if (green > red && green > blue) {
-		//	yellow
-		if (red > blue) {
-			r = (green - red) + blue;
-			g = blue;
-			b = green;
-		}
-		//	cyan
-		if (blue > red) {
-			r = green;
-			g = red;
-			b = (green - blue) + red;
-		}
-		if (blue == red) {
-			r = green;
-			g = red;
-			b = green;
-		}
-	}
+    //	yellow and cyan
+	( green > red && green > blue ) && (
+        red > blue && ( r = ( green - red ) + blue, g = blue, b = green ),
+        blue > red && ( r = green, g = red, b = ( green - blue ) + red ),
+        blue == red && ( r = green, g = red, b = green )
+    );
 	//	blue highest value
-	if (blue > red && blue > green) {
-		//	magenta
-		if (red > green) {
-			r = (green - red) + blue;
-			g = blue;
-			b = green;
-		}
-		//	cyan
-		if (green > red) {
-			r = blue;
-			g = (blue - green) + red;
-			b = red;
-		}
-		if (green == red) {
-			r = blue;
-			g = blue;
-			b = red;
-		}
-	}
+    //	magenta and cyan
+	( blue > red && blue > green ) && (
+        red > green && ( r = (green - red) + blue, g = blue, b = green ),
+        green > red && ( r = blue, g = (blue - green) + red, b = red ),
+        green == red && ( r = blue, g = blue, b = red )
+    );
 	//	red green highest
-	if (red > blue && red == green) {
-		r = green;
-		g = green;
-		b = red;
-	}
+	( red > blue && red == green ) && ( r = green, g = green, b = red );
 	//	red blue highest
-	if (red > green && red == blue) {
-		r = green;
-		g = red;
-		b = green;
-	}
+	( red > green && red == blue) && ( r = green, g = red, b = green );
 	//	green blue highest
-	if (green > red && green == blue) {
-		r = green;
-		g = red;
-		b = red;
-	}
+	( green > red && green == blue ) && ( r = green, g = red, b = red );
 	//	gray / white / black
-	if (red == blue && red == green) {
-		r = 255 - red;
-		g = 255 - green;
-		b = 255 - blue;
-	}
+	(red == blue && red == green) && ( r = 255 - red, g = 255 - green, b = 255 - blue );
 
 	return {
         r : r,
@@ -216,7 +144,7 @@ function get_cmyk( red, green, blue ) {
     };
 }
 
-function scroll() {
+const scroll = () => {
     let header = document.querySelector("section#blend_page");
     let search_container = document.querySelector("section#blend_section");
     let scroll_y;
@@ -227,7 +155,7 @@ function scroll() {
         behavior: 'smooth'
     });
 }
- 
+
 function shades_tints(colors, red, green, blue) {
     const shades = Array.from(colors).slice(0,4);
     
@@ -302,29 +230,13 @@ function gradient_shades(colors, r1, g1, b1, r2, g2, b2) {
     colors[8].blue = b2;
     
     shades.forEach(s => {
-        if (r1 > r2) {
-            r1 -= r_step;
-        }
-        else {
-            r1 += r_step;
-        }
-        if (g1 > g2) {
-            g1 -= g_step;
-        }
-        else {
-            g1 += g_step;
-        }
-        if (b1 > b2) {
-            b1 -= b_step;
-        }
-        else {
-            b1 += b_step;
-        }
+        (r1 > r2) ? r1 -= r_step : r1 += r_step;
+        (g1 > g2) ? g1 -= g_step : g1 += g_step;
+        (b1 > b2) ? b1 -= b_step : b1 += b_step;
         
         s.red = r1;
         s.green = g1;
         s.blue = b1;
-        
     });
 }
     
@@ -410,9 +322,8 @@ function color_palette(red, green, blue) {
     new Palette(triad_two, triad_two_value.r, triad_two_value.g, triad_two_value.b);
     new Palette(complement_palette, comp.r, comp.g, comp.b);
 }
-    
-function show_hide_sections(containers_show, containers_hide) {
-    
+
+const show_hide_sections = ( containers_show, containers_hide ) => {
     document.querySelector("section#colors_section").classList.remove("section-hidden");
     containers_show.forEach(container => {
         container.classList.remove("section-hidden");
@@ -423,7 +334,7 @@ function show_hide_sections(containers_show, containers_hide) {
     });
 }
     
-function main_animation() {
+const main_animation = () => {
     const animation_palette = document.getElementById("animation_palette");
     const animation_colors = Array.from(animation_palette.children);
     
@@ -441,7 +352,7 @@ function main_animation() {
     }, 2000);
 }
 
-function validate_input( input, hex_re, rgb_re ) {
+const validate_input = ( input, hex_re, rgb_re ) => {
     let valid = true;
 
     if ( input.match( hex_re ) || input.match( rgb_re ) ) {
@@ -454,7 +365,7 @@ function validate_input( input, hex_re, rgb_re ) {
     return valid;
 }
 
-function input_to_colors( input, color_type ) {
+const input_to_colors = ( input, color_type ) => {
     let rgb = { r : null, g : null, b : null };
 
     if ( color_type == "hex" ) {
