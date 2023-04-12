@@ -625,6 +625,20 @@ section#blend_section {
                     border-radius:@main_radius;
                     margin:@main_margin 0;
                     padding:@main_padding;
+
+                    input.color_input {
+                        color:lightgray;
+                        background-color:rgba(255, 255, 255, 0);
+                        border:none;
+                                
+                        font-family:"Fira Mono", monospace;
+                        font-size:1rem;
+                        text-transform:uppercase;
+                                
+                        &:focus {
+                            outline:none;
+                        }
+                    }
                     
                     div.inner_container {
                         display:flex;
@@ -640,55 +654,16 @@ section#blend_section {
                     border:1px solid transparent;
                 }
                 
-                div#blend_input_container {
                     div.blend_color_container {
-                        &:first-child {
-                            background:linear-gradient(@dark, @dark) padding-box,
-                            linear-gradient(to bottom right, @blend_color_one, @blend_color_one_light,
-                            @blend_color_two_light, @blend_color_two) border-box;
-                            border:1px solid transparent;
-                        }
-                        
-                        &:last-child {
-                            background:linear-gradient(@dark, @dark) padding-box,
-                            linear-gradient(to top right, @blend_color_one, @blend_color_one_light,
-                            @blend_color_two_light, @blend_color_two) border-box;
-                            border:1px solid transparent;
-                        }
+                        background:linear-gradient(@dark, @dark) padding-box,
+                        linear-gradient(to bottom right, @blend_color_one, @blend_color_one_light,
+                        @blend_color_two_light, @blend_color_two) border-box;
+                        border:1px solid transparent;
                         
                         div.blend_color_title {
                             margin-bottom:@main_margin;
                         }
                     }
-                }
-                
-                div.inner_container {
-                    
-                    div.text_area {
-                        border-bottom:1px solid gray;
-                        padding-bottom:calc(@main_padding / 2);
-                        
-                        span.hash,
-                        span.rgb {
-                            margin-right:calc(@main_margin / 4);
-                            display:inline;
-                        }
-                        
-                        input[type=text] {
-                            color:lightgray;
-                            background-color:rgba(255, 255, 255, 0);
-                            border:none;
-                            
-                            font-family:"Fira Mono", monospace;
-                            font-size:1rem;
-                            text-transform:uppercase;
-                            
-                            &:focus {
-                                outline:none;
-                            }
-                        }
-                    }
-                }
             } /* slide */
         } /* slider__inner */
     } /* div#blend_container */

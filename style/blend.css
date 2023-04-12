@@ -531,6 +531,19 @@ section#blend_section div#blend_container div.slider__inner div.slide div.blend_
   margin: 1em 0;
   padding: 1em;
 }
+section#blend_section div#blend_container div.slider__inner div.slide div.search_color_container input.color_input,
+section#blend_section div#blend_container div.slider__inner div.slide div.blend_color_container input.color_input {
+  color: lightgray;
+  background-color: rgba(255, 255, 255, 0);
+  border: none;
+  font-family: "Fira Mono", monospace;
+  font-size: 1rem;
+  text-transform: uppercase;
+}
+section#blend_section div#blend_container div.slider__inner div.slide div.search_color_container input.color_input:focus,
+section#blend_section div#blend_container div.slider__inner div.slide div.blend_color_container input.color_input:focus {
+  outline: none;
+}
 section#blend_section div#blend_container div.slider__inner div.slide div.search_color_container div.inner_container,
 section#blend_section div#blend_container div.slider__inner div.slide div.blend_color_container div.inner_container {
   display: flex;
@@ -541,36 +554,12 @@ section#blend_section div#blend_container div.slider__inner div.slide div.search
   background: linear-gradient(#1e1e1e, #1e1e1e) padding-box, linear-gradient(to bottom right, #15dc5a, #8aebab, #d9b5fd, #9529f9) border-box;
   border: 1px solid transparent;
 }
-section#blend_section div#blend_container div.slider__inner div.slide div#blend_input_container div.blend_color_container:first-child {
+section#blend_section div#blend_container div.slider__inner div.slide div.blend_color_container {
   background: linear-gradient(#1e1e1e, #1e1e1e) padding-box, linear-gradient(to bottom right, #15dc5a, #8aebab, #d9b5fd, #9529f9) border-box;
   border: 1px solid transparent;
 }
-section#blend_section div#blend_container div.slider__inner div.slide div#blend_input_container div.blend_color_container:last-child {
-  background: linear-gradient(#1e1e1e, #1e1e1e) padding-box, linear-gradient(to top right, #15dc5a, #8aebab, #d9b5fd, #9529f9) border-box;
-  border: 1px solid transparent;
-}
-section#blend_section div#blend_container div.slider__inner div.slide div#blend_input_container div.blend_color_container div.blend_color_title {
+section#blend_section div#blend_container div.slider__inner div.slide div.blend_color_container div.blend_color_title {
   margin-bottom: 1em;
-}
-section#blend_section div#blend_container div.slider__inner div.slide div.inner_container div.text_area {
-  border-bottom: 1px solid gray;
-  padding-bottom: calc(1em / 2);
-}
-section#blend_section div#blend_container div.slider__inner div.slide div.inner_container div.text_area span.hash,
-section#blend_section div#blend_container div.slider__inner div.slide div.inner_container div.text_area span.rgb {
-  margin-right: calc(1em / 4);
-  display: inline;
-}
-section#blend_section div#blend_container div.slider__inner div.slide div.inner_container div.text_area input[type=text] {
-  color: lightgray;
-  background-color: rgba(255, 255, 255, 0);
-  border: none;
-  font-family: "Fira Mono", monospace;
-  font-size: 1rem;
-  text-transform: uppercase;
-}
-section#blend_section div#blend_container div.slider__inner div.slide div.inner_container div.text_area input[type=text]:focus {
-  outline: none;
 }
 .section-hidden {
   opacity: 0;

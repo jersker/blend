@@ -445,7 +445,7 @@ function show_hide_sections(containers_show, containers_hide) {
         container.classList.add("section-hidden");
     });
 }
-    
+
 function retrieve_input( button ) {
     const slide_id = "#" + document.querySelector("#" + button).parentElement.getAttribute("id");
     const slide = document.querySelector(slide_id);
@@ -470,37 +470,6 @@ function retrieve_input( button ) {
     return colors;
 }
     
-function validate_input( input, type ) {
-    let valid = true;
-    let invalid_code;
-    
-    switch (type) {
-        case "hex":
-            if ( input.length == 3 ) {
-                valid = true;
-                input = input[0] + input[0] + input[1] + input[1] + input[2] + input[2];
-            }
-            else if ( input.length < 6 && input.length !== 3) {
-                valid = false;
-                invalid_code = "hex";
-            }
-            break;
-        case "rgb":
-            if ( input[0] > 255 || input[1] > 255 || input[2] > 255 ) {
-                valid = false;
-                invalid_code = "rgb";
-            }
-            else {
-                for (let v = 0; v < input.length; v++) {
-                    input[v] = parseInt(input[v], 10);
-                }
-            }
-            break;
-    }
-
-    return input;
-}
-    
 function validate( input, color ) {
     
     let valid = true;
@@ -521,13 +490,17 @@ function validate( input, color ) {
             valid = true;
         }
     }
-    else {
+    else if ( rgb_input ) {
         if ( input > 255 ) {
             valid = false;
             invalid_code = "rgb"
         }
         else {
             valid = true;
+            if ( color[1] == null || color[2] == null || color[3] == null ) {
+                valid = false;
+                invalid_code = "rgb"
+            }
         }
     }
 
@@ -538,15 +511,19 @@ function parse_input_to_colors( inputs, button ) {
 
     let rgb = [ rgb1 = { r : null, g : null, b : null },
                 rgb2 = { r : null, g : null, b : null } ];
+    let valid = true;
     
-    inputs.forEach( (input, color) => {
-        let valid;
+    inputs.forEach( ( input, color ) => {
         let hex_input = input[0];
         let rgb_input = input[1] || input[2] || input[3];
         
         if ( hex_input ) {
             if ( validate( hex_input, input ) ) {
-                rgb[color] = hex_to_rgb(hex_input);
+                rgb[ color ] = hex_to_rgb(hex_input);
+                valid = true;
+            }
+            else {
+                valid = false;
             }
         }
         if ( rgb_input ) {
@@ -554,6 +531,10 @@ function parse_input_to_colors( inputs, button ) {
                 rgb[color].r = parseInt(input[1], 10);
                 rgb[color].g = parseInt(input[2], 10);
                 rgb[color].b = parseInt(input[3], 10);
+                valid = true;
+            }
+            else {
+                valid = false;
             }
         }
         color++;
@@ -565,7 +546,8 @@ function parse_input_to_colors( inputs, button ) {
         b1 : rgb[ 0 ].b,
         r2 : rgb[ 1 ].r,
         g2 : rgb[ 1 ].g,
-        b2 : rgb[ 1 ].b
+        b2 : rgb[ 1 ].b,
+        valid : valid
     };
 }
     
@@ -586,83 +568,84 @@ function main_animation() {
         active_color.click();
     }, 2000);
 }
+
+function validate_input( input, hex_re, rgb_re ) {
+    let valid = true;
+
+    if ( input.match( hex_re ) || input.match( rgb_re ) ) {
+        valid = true;
+    }
+    else {
+        valid = false;
+    }
+
+    return valid;
+}
+
+function input_to_colors( input, color_type ) {
+    let rgb = { r : null, g : null, b : null };
+
+    if ( color_type == "hex" ) {
+        input = input.replace( /[^a-z0-9]/gi, '' );
+        rgb = hex_to_rgb( input );
+    }
+    else {
+        input = input.match( /\d+/g ).map( Number );
+        Object.keys( rgb[index] ).forEach( function ( key, index ) {
+            rgb[key] = input[index];
+        });
+    }
+
+    return rgb;
+}
     
-function begin( button, search_inputs ) {
+function begin( input_type ) {
     const color_containers = document.querySelectorAll(".color_container");
     const gradient_palette = document.getElementById("gradient_palette");
     const gradient_container = document.querySelectorAll(".gradient_container");
     
     hide_error();
-    
-    let type = "";
-    let value = 0;
-    
-    switch ( button ) {
-        case "search_button":
-            value = 1;
-            type = "input";
-            break;
-        case "blend_button":
-            value = 2;
-            type = "input"
-            break;
-        case "random_button":
-            value = 1;
-            type = "random";
-            break;
-        case "random_gradient":
-            value = 2;
-            type = "random";
-            break;
-    }
-    
-    let rgb;
-    let red1, green1, blue1;
-    let red2, green2, blue2;
-    
-    switch ( type ) {
-        case "input":
-            const inputs = retrieve_input( button );
-            rgb = parse_input_to_colors( inputs, button );
-            
-            red1 = rgb.r1;
-            green1 = rgb.g1;
-            blue1 = rgb.b1;
 
-            console.log(red1, green1, blue1);
-            
-            red2 = rgb.r2;
-            green2 = rgb.g2;
-            blue2 = rgb.b2;
-            break;
-        case "random":
-            rgb = hex_to_rgb( hex_rand() );
-            
-            red1 = rgb.r;
-            green1 = rgb.g;
-            blue1 = rgb.b;
-            
-            rgb = hex_to_rgb( hex_rand() );
-            
-            red2 = rgb.r;
-            green2 = rgb.g;
-            blue2 = rgb.b;
-            break;
-    }
+    const hex_re = /^#?([0-9A-F]{3}){1,2}$/i;
+    //const rgb_re = /^(0|[1-9]\\d?|1\\d\\d?|2[0-4]\\d|25[0-5])%?\\s*,\\s*(0|[1-9]\\d?|1\\d\\d?|2[0-4]\\d|25[0-5])%?\\s*,\\s*(0|[1-9]\\d?|1\\d\\d?|2[0-4]\\d|25[0-5])%?\\s*$/;
+    const rgb_re = /^(rgb)?\(?([01]?\d\d?|2[0-4]\d|25[0-5])((\,)|(\ )|(\,( )))([01]?\d\d?|2[0-4]\d|25[0-5])((\,)|(\ )|(\,( )))(([01]?\d\d?|2[0-4]\d|25[0-5])\)?)$/;
     
-    switch ( value ) {
-        //  Search
-        case 1:
-            color_palette(red1, green1, blue1);
-            show_hide_sections(color_containers, gradient_container);
-            scroll();
-            break;
-        //  Blend
-        case 2:
-            new Palette(gradient_palette, red1, green1, blue1, red2, green2, blue2);
-            show_hide_sections(gradient_container, color_containers);
-            scroll();
-            break;
+    let color_type;
+    let inputs = document.getElementById(input_type).querySelectorAll(".color_input");
+
+    let colors = {};
+
+    inputs.forEach( ( field, index ) => {
+        let input = field.value;
+        if ( input ) {
+            if ( validate_input( input, hex_re, rgb_re ) ) {
+                if ( input.match( hex_re ) ) {
+                    color_type = "hex";
+                }
+                else if ( input.match( rgb_re ) ) {
+                    color_type = "rgb";
+                }
+
+                colors[index] = input_to_colors( input, color_type );
+            }
+            else {
+                console.log("error: not valid input");
+            }
+        }
+    });
+
+    console.log(colors);
+
+    if ( input_type == "search_slide" ) {
+        color_palette( colors[0].r, colors[0].g, colors[0].b );
+        show_hide_sections( color_containers, gradient_container );
+        scroll();
+    }
+    else {
+        new Palette( gradient_palette, colors[0].r, colors[0].g, colors[0].b, 
+        colors[1].r, colors[1].g, colors[1].b );
+        show_hide_sections( gradient_container, color_containers );
+        scroll();
     }
 }
     
@@ -670,7 +653,7 @@ function start() {
     
     main_animation();
 
-    const input_fields = document.querySelectorAll("div.text_area input");
+    const input_fields = document.querySelectorAll("input.color_input");
     const search_inputs = document.querySelectorAll("div#search_slide input");
     const blend_inputs = document.querySelectorAll("div#blend_slide input");
 
@@ -695,41 +678,11 @@ function start() {
     input_fields.forEach(field => {
         field.addEventListener("keydown", event => {
             let key = event.charCode || event.keyCode;
-            let allowed = [
-                //    0-9
-                48, 49, 50, 51, 52, 53, 54, 55, 56, 57,
-                //    0-9 numpad
-                96, 97, 98, 99, 100, 101, 102, 103, 104, 105,
-                //    enter, backspace
-                13, 8
-            ];
-                
-            if ( field.classList.contains("hex_input") ) {
-                //  A-F
-                allowed.push( 65, 66, 67, 68, 69, 70, );
-            }
-            
-            //  Allow tab if and only if input has immediate sibling
-            //  or if there are still input elements on the same slide.
-            //  This prevents the user from tabbing to another slide.
-            
-            //  works for search slide
-            if ( field.nextElementSibling ||
-                field.parentElement.nextElementSibling ) {
-                allowed.push( 9 );
-            }
-
-            for (let i = 0; i < allowed.length; i++) {
-                if ( !(allowed.includes(key) ) || (event.shiftKey)) {
-                    event.preventDefault();
-                }
-            }
             
             //  Enter key
             if (key === 13) {
                 //  Messy, but gets the button ID of the slide where enter was pressed
-                let button_type = field.parentNode.parentNode.parentNode.nextElementSibling;
-                begin( button_type.getAttribute("id") );
+                begin( field.parentNode.parentNode.getAttribute("id") );
                 //  Clear all input
                 input_fields.forEach(field => {
                     field.value = "";
@@ -755,10 +708,11 @@ function start() {
         });
     });
 
+
+    //  todo: fix random buttons
     buttons.forEach(button => {
         button.addEventListener("click", function() {
-            button.index = buttons.indexOf( button );
-            begin( this.getAttribute("id"), search_inputs );
+            begin( this.parentNode.getAttribute("id") );
             //  Clear all input
             input_fields.forEach( field => {
                 field.value = "";
