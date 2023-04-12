@@ -22,11 +22,14 @@ function hex_rand() {
 	return hex;
 }
     
-function hex_to_rgb(hex) {
+function hex_to_rgb( hex ) {
+    if ( hex.length == 3 ) {
+        hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+    }
     return {
-        r : parseInt(hex.substring(0, 2), 16),
-        g : parseInt(hex.substring(2, 4), 16),
-        b : parseInt(hex.substring(4, 6), 16)
+        r : parseInt( hex.substring( 0, 2 ), 16 ),
+        g : parseInt( hex.substring( 2, 4 ), 16 ),
+        b : parseInt( hex.substring( 4, 6 ), 16 )
     };
 }
 
@@ -163,7 +166,7 @@ function complement(red, green, blue) {
     };
 }
     
-function get_cmyk(red, green, blue) {
+function get_cmyk( red, green, blue ) {
     let cyan = 0, magenta = 0, yellow = 0;
     
     let cmy = {
@@ -211,32 +214,6 @@ function get_cmyk(red, green, blue) {
         y : cmy.yellow,
         k : black
     };
-}
-
-const message = document.getElementsByClassName("message");
-
-function hide_error() {
-	message[0].style.opacity = "0";
-	message[1].style.opacity = "0";
-}
-
-function show_error(index, type) {
-    let error = "";
-    if ( type == "hex" ) {
-        error = "Please enter a valid hexadecimal value."
-    }
-    else if (type == "rgb") {
-        error = "Please enter a valid RGB value."
-    }
-    else if (type == "both") {
-        error = "Please only enter one value for each color."
-    }
-    else if (type == "none_search") {
-        error = "Please enter a value."
-    }
-
-	message[index].innerHTML = error;
-	message[index].style.opacity = "1";
 }
 
 function scroll() {
@@ -374,7 +351,7 @@ function create_labels(color) {
 }
     
 class Palette {
-	constructor(palette, r1, g1, b1, r2, g2, b2) {
+	constructor( palette, r1, g1, b1, r2, g2, b2 ) {
 		let colors = palette.children;
 
         if ( palette.parentElement.classList.contains("color_container") ) {
@@ -445,111 +422,6 @@ function show_hide_sections(containers_show, containers_hide) {
         container.classList.add("section-hidden");
     });
 }
-
-function retrieve_input( button ) {
-    const slide_id = "#" + document.querySelector("#" + button).parentElement.getAttribute("id");
-    const slide = document.querySelector(slide_id);
-    const input_containers = slide.querySelectorAll("div.input_container");
-    
-    let color = [ null, null, null, null ];
-    let colors = [];
-    
-    input_containers.forEach(container => {
-        let inputs = container.querySelectorAll("input");
-        
-        inputs.forEach(function( input, index ) {
-            if ( input.value ) {
-                color[index] = input.value;
-            }
-        });
-        
-        colors.push( color );
-        color = [];
-    });
-    
-    return colors;
-}
-    
-function validate( input, color ) {
-    
-    let valid = true;
-    let invalid_code = "";
-    
-    let hex_input = color[0];
-    let rgb_input = color[1] || color[2] || color[3];
-    
-    if ( hex_input ) { 
-        if ( input.length == 3 ) {
-            valid = true;
-        }
-        else if ( input.length < 6 && input.length !== 3) {
-            valid = false;
-            invalid_code = "hex";
-        }
-        else {
-            valid = true;
-        }
-    }
-    else if ( rgb_input ) {
-        if ( input > 255 ) {
-            valid = false;
-            invalid_code = "rgb"
-        }
-        else {
-            valid = true;
-            if ( color[1] == null || color[2] == null || color[3] == null ) {
-                valid = false;
-                invalid_code = "rgb"
-            }
-        }
-    }
-
-    return valid;
-}
-    
-function parse_input_to_colors( inputs, button ) {
-
-    let rgb = [ rgb1 = { r : null, g : null, b : null },
-                rgb2 = { r : null, g : null, b : null } ];
-    let valid = true;
-    
-    inputs.forEach( ( input, color ) => {
-        let hex_input = input[0];
-        let rgb_input = input[1] || input[2] || input[3];
-        
-        if ( hex_input ) {
-            if ( validate( hex_input, input ) ) {
-                rgb[ color ] = hex_to_rgb(hex_input);
-                valid = true;
-            }
-            else {
-                valid = false;
-            }
-        }
-        if ( rgb_input ) {
-            if ( validate( rgb_input, input ) ) {
-                rgb[color].r = parseInt(input[1], 10);
-                rgb[color].g = parseInt(input[2], 10);
-                rgb[color].b = parseInt(input[3], 10);
-                valid = true;
-            }
-            else {
-                valid = false;
-            }
-        }
-        color++;
-    });
-
-    return {
-        r1 : rgb[ 0 ].r,
-        g1 : rgb[ 0 ].g,
-        b1 : rgb[ 0 ].b,
-        r2 : rgb[ 1 ].r,
-        g2 : rgb[ 1 ].g,
-        b2 : rgb[ 1 ].b,
-        valid : valid
-    };
-}
     
 function main_animation() {
     const animation_palette = document.getElementById("animation_palette");
@@ -591,7 +463,7 @@ function input_to_colors( input, color_type ) {
     }
     else {
         input = input.match( /\d+/g ).map( Number );
-        Object.keys( rgb[index] ).forEach( function ( key, index ) {
+        Object.keys( rgb ).forEach( function ( key, index ) {
             rgb[key] = input[index];
         });
     }
@@ -603,11 +475,8 @@ function begin( input_type ) {
     const color_containers = document.querySelectorAll(".color_container");
     const gradient_palette = document.getElementById("gradient_palette");
     const gradient_container = document.querySelectorAll(".gradient_container");
-    
-    hide_error();
 
     const hex_re = /^#?([0-9A-F]{3}){1,2}$/i;
-    //const rgb_re = /^(0|[1-9]\\d?|1\\d\\d?|2[0-4]\\d|25[0-5])%?\\s*,\\s*(0|[1-9]\\d?|1\\d\\d?|2[0-4]\\d|25[0-5])%?\\s*,\\s*(0|[1-9]\\d?|1\\d\\d?|2[0-4]\\d|25[0-5])%?\\s*$/;
     const rgb_re = /^(rgb)?\(?([01]?\d\d?|2[0-4]\d|25[0-5])((\,)|(\ )|(\,( )))([01]?\d\d?|2[0-4]\d|25[0-5])((\,)|(\ )|(\,( )))(([01]?\d\d?|2[0-4]\d|25[0-5])\)?)$/;
     
     let color_type;
@@ -632,9 +501,10 @@ function begin( input_type ) {
                 console.log("error: not valid input");
             }
         }
+        else {
+            console.log("error");
+        }
     });
-
-    console.log(colors);
 
     if ( input_type == "search_slide" ) {
         color_palette( colors[0].r, colors[0].g, colors[0].b );
@@ -650,13 +520,11 @@ function begin( input_type ) {
 }
     
 function start() {
-    
-    main_animation();
-
     const input_fields = document.querySelectorAll("input.color_input");
     const search_inputs = document.querySelectorAll("div#search_slide input");
     const blend_inputs = document.querySelectorAll("div#blend_slide input");
-
+    const color_palettes = document.querySelectorAll("div.palette_container");
+    const landing_button = document.querySelectorAll("div.landing_button");
     const buttons = [
         document.getElementById("search_button"),
         document.getElementById("blend_button"),
@@ -664,8 +532,7 @@ function start() {
         document.getElementById("random_gradient")
     ];
     
-    const color_palettes = document.querySelectorAll("div.palette_container");
-	const color = document.querySelectorAll(".color");
+    main_animation();
 
     //  Hide all palettes
     //  Hide the section that shows the palettes
@@ -719,9 +586,6 @@ function start() {
             });
         });
     });
-
-    let landing_button = document.querySelectorAll("div.landing_button");
-    const blend_page = document.getElementById("blend_page");
 
     landing_button.forEach(button => {
         button.addEventListener("click", function() {
