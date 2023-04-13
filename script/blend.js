@@ -24,10 +24,9 @@ function hex_rand() {
 	return hex;
 }
     
-function hex_to_rgb( hex ) {
-    if ( hex.length == 3 ) {
-        hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
-    }
+const hex_to_rgb = ( hex ) => {
+    ( hex.length == 3 ) && ( hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2] );
+    
     return {
         r : parseInt( hex.substring( 0, 2 ), 16 ),
         g : parseInt( hex.substring( 2, 4 ), 16 ),
@@ -49,43 +48,40 @@ function rgb_to_hex(red, green, blue) {
 
 // // // // // // // // // //
 
-const triadic_one = ( red, green, blue ) => ({r : green, g : blue, b : red});
-const triadic_two = ( red, green, blue ) => ({r : blue, g : red, b : green});
+const triadic_one = ( red, green, blue ) => ( { r : green, g : blue, b : red } );
+const triadic_two = ( red, green, blue ) => ( { r : blue, g : red, b : green } );
 
-function complement(red, green, blue) {
-	let r = 0;
-	let g = 0;
-	let b = 0;
+function complement( red, green, blue ) {
+	let r = 0, g = 0, b = 0;
 
-	//	red highest value
-    //	yellow and magenta
-    ( red > blue && red > green ) && (
-        green > blue && ( r = blue, g = ( red - green ) + blue, b = red ),
-        blue > green && ( r = green, g = red, b = ( red - blue ) + green ),
-        green == blue && ( r = green, g = red, b = red )
-    ); 
-	//	green highest value
-    //	yellow and cyan
-	( green > red && green > blue ) && (
-        red > blue && ( r = ( green - red ) + blue, g = blue, b = green ),
-        blue > red && ( r = green, g = red, b = ( green - blue ) + red ),
-        blue == red && ( r = green, g = red, b = green )
+    ( red > blue ) && (
+        ( red > green ) ? (
+            green > blue && ( r = blue, g = ( red - green ) + blue, b = red ),
+            blue > green && ( r = green, g = red, b = ( red - blue ) + green ),
+            green == blue && ( r = green, g = red, b = red )
+        ) : ( red == green ) && (
+            ( r = green, g = green, b = red )
+        )
     );
-	//	blue highest value
-    //	magenta and cyan
-	( blue > red && blue > green ) && (
-        red > green && ( r = (green - red) + blue, g = blue, b = green ),
-        green > red && ( r = blue, g = (blue - green) + red, b = red ),
-        green == red && ( r = blue, g = blue, b = red )
+    ( green > red ) && (
+        ( green > blue ) ? (
+            red > blue && ( r = ( green - red ) + blue, g = blue, b = green ),
+            blue > red && ( r = green, g = red, b = ( green - blue ) + red ),
+            blue == red && ( r = green, g = red, b = green )
+        ) : ( green == blue ) && ( 
+            (r = green, g = red, b = red )
+        )
     );
-	//	red green highest
-	( red > blue && red == green ) && ( r = green, g = green, b = red );
-	//	red blue highest
-	( red > green && red == blue) && ( r = green, g = red, b = green );
-	//	green blue highest
-	( green > red && green == blue ) && ( r = green, g = red, b = red );
-	//	gray / white / black
-	(red == blue && red == green) && ( r = 255 - red, g = 255 - green, b = 255 - blue );
+    ( blue > red ) && (
+        ( blue > green ) ? (
+            red > green && ( r = (green - red) + blue, g = blue, b = green ),
+            green > red && ( r = blue, g = (blue - green) + red, b = red ),
+            green == red && ( r = blue, g = blue, b = red )
+        ) : ( blue == green ) && (
+            ( r = green, g = red, b = red )
+        )
+    );
+	( red == blue && red == green ) && ( r = 255 - red, g = 255 - green, b = 255 - blue );
 
 	return {
         r : r,
@@ -96,41 +92,20 @@ function complement(red, green, blue) {
     
 function get_cmyk( red, green, blue ) {
     let cyan = 0, magenta = 0, yellow = 0;
-    
-    let cmy = {
-        cyan, magenta, yellow
-    };
-    
-    let rgb = [
-        red,
-        green,
-        blue
-    ];
-    
+    let cmy = { cyan, magenta, yellow };
+    let rgb = [ red, green, blue ];
     let black = 100;
 	let minimum = 0;
     
     if ( ! (red == 0 && green == 0 & blue == 0 ) ) {
-        
         Object.keys(cmy).forEach(function (color_type, index) {
-            if (rgb[index] == 0) {
-                cmy[color_type] = 100;
-            }
-            else {
-                cmy[color_type] = (1 - (rgb[index] / 255));
-            }
-            
+            ( rgb[ index ] == 0 ) ? cmy[ color_type ] = 100 : cmy[ color_type ] = ( 1 - ( rgb[ index ] / 255 ) );
         });
         
         minimum = Math.min(cmy.cyan, cmy.magenta, cmy.yellow);
         
         Object.keys(cmy).forEach(function (color_type, index) {
-            if (rgb[index] == 0) {
-                cmy[color_type] = 100;
-            }
-            else {
-                cmy[color_type] = Math.round((cmy[color_type] - minimum) / (1 - minimum) * 100);
-            }
+            ( rgb[ index ] == 0 ) ? cmy[ color_type ] = 100 : cmy[ color_type ] = Math.round( ( cmy[ color_type ] - minimum ) / ( 1 - minimum ) * 100 );
         });
 
         black = Math.round(minimum * 100);
@@ -145,10 +120,9 @@ function get_cmyk( red, green, blue ) {
 }
 
 const scroll = () => {
-    let header = document.querySelector("section#blend_page");
-    let search_container = document.querySelector("section#blend_section");
-    let scroll_y;
-    scroll_y = header.offsetHeight + search_container.offsetHeight;
+    const header = document.querySelector("section#blend_page");
+    const search_container = document.querySelector("section#blend_section");
+    const scroll_y = header.offsetHeight + search_container.offsetHeight;
     
     window.scroll({
         top: scroll_y,
@@ -156,17 +130,23 @@ const scroll = () => {
     });
 }
 
-function shades_tints(colors, red, green, blue) {
-    const shades = Array.from(colors).slice(0,4);
-    
-    const red_shade = Math.floor( red / 5 );
-    const green_shade = Math.floor( green / 5 );
-    const blue_shade = Math.floor( blue / 5 );
-    
-    let red_s = red_shade;
-    let green_s = green_shade;
-    let blue_s = blue_shade;
-    
+function shades_tints( colors, red, green, blue ) {
+    //  Shades are array items 0 - 4
+    //  Tints are array items 5 - 9
+    const shade_min = 0, shade_max = Math.floor( colors.length / 2 );
+    const tint_min = (colors.length - shade_max), tint_max = colors.length;
+    const shades = Array.from( colors ).slice( shade_min, shade_max );
+    const tints = Array.from( colors ).slice( tint_min, tint_max );
+    //  How much the color number should increment
+    const shade = ( value ) => Math.floor( value / shade_max );
+    const tint = ( value ) => Math.floor( ( 255 - value ) / tint_min );
+    const red_shade = shade( red ), green_shade = shade( green ), blue_shade = shade( blue );  
+    const red_tint = tint( red ), green_tint = tint( green ), blue_tint = tint( blue );
+    //  Unfixed versions of _shade and _tint
+    let red_s = red_shade, green_s = green_shade, blue_s = blue_shade;
+    let red_t = red + red_tint, green_t = green + green_tint, blue_t = blue + blue_tint;
+    //  Each shade / tint array item will be assigned a unique
+    //  red, green, and blue value to be colored later
     shades.forEach(s => {
         s.red = red_s;
         s.green = green_s;
@@ -176,17 +156,6 @@ function shades_tints(colors, red, green, blue) {
         green_s += green_shade;
         blue_s += blue_shade;
     });
-    
-    const tints = Array.from(colors).slice(5,9);
-    
-    const red_tint = Math.floor( (255 - red) / 5 );
-    const green_tint = Math.floor( (255 - green) / 5 );
-    const blue_tint = Math.floor( (255 - blue) / 5 );
-    
-    let red_t = red + red_tint;
-    let green_t = green + green_tint;
-    let blue_t = blue + blue_tint;
-    
     tints.forEach(t => {
         t.red = red_t;
         t.green = green_t;
@@ -196,43 +165,34 @@ function shades_tints(colors, red, green, blue) {
         green_t += green_tint;
         blue_t += blue_tint;
     });
-    
-    colors[4].red = red;
-    colors[4].green = green;
-    colors[4].blue = blue;
+    //  Manually color the median array item with original values
+    colors[ shade_max ].red = red;
+    colors[ shade_max ].green = green;
+    colors[ shade_max ].blue = blue;
 }
     
-function gradient_shades(colors, r1, g1, b1, r2, g2, b2) {
-
-    const shades = Array.from(colors).slice(1,8);
-    //    Get halfway values between colors A and B
-    let r_step = Math.floor( (r1 + r2) / 2);
-    let g_step = Math.floor( (g1 + g2) / 2);
-    let b_step = Math.floor( (b1 + b2) / 2);
-
-    for (let i = 0; i < 2; i++) {
-        r_step = Math.floor((r_step + r1) / 2);
-        g_step = Math.floor((g_step + g1) / 2);
-        b_step = Math.floor((b_step + b1) / 2);
-    }
-    //    Convert all to positive values to get
-    //    distance from zero
-    r_step = Math.abs(r1 - r_step);
-    g_step = Math.abs(g1 - g_step);
-    b_step = Math.abs(b1 - b_step);
+const gradient_shades = ( colors, r1, g1, b1, r2, g2, b2 ) => {
+    const max = ( colors.length - 1 );
+    const shades = Array.from( colors ).slice( 1, max );
+    //  Absolute value of how much the r, g, and b 
+    //  values change from r1 to r2
+    const step = ( value_a, value_b, max ) => Math.abs( value_a - Math.floor( ( ( value_a * max ) + value_b ) / ( max + 1 ) ) );
+    const r_step = step( r1, r2, max );
+    const g_step = step( g1, g2, max );
+    const b_step = step( b1, b2, max );
     
-    colors[0].red = r1;
-    colors[0].green = g1;
-    colors[0].blue = b1;
+    colors[ 0 ].red = r1;
+    colors[ 0 ].green = g1;
+    colors[ 0 ].blue = b1;
     
-    colors[8].red = r2;
-    colors[8].green = g2;
-    colors[8].blue = b2;
+    colors[ max ].red = r2;
+    colors[ max ].green = g2;
+    colors[ max ].blue = b2;
     
     shades.forEach(s => {
-        (r1 > r2) ? r1 -= r_step : r1 += r_step;
-        (g1 > g2) ? g1 -= g_step : g1 += g_step;
-        (b1 > b2) ? b1 -= b_step : b1 += b_step;
+        ( r1 > r2 ) ? r1 -= r_step : r1 += r_step;
+        ( g1 > g2 ) ? g1 -= g_step : g1 += g_step;
+        ( b1 > b2 ) ? b1 -= b_step : b1 += b_step;
         
         s.red = r1;
         s.green = g1;
@@ -338,8 +298,8 @@ const main_animation = () => {
     const animation_palette = document.getElementById("animation_palette");
     const animation_colors = Array.from(animation_palette.children);
     
-    const rgb1 = hex_to_rgb("15dc5a");
-    const rgb2 = hex_to_rgb("9529f9");
+    const rgb1 = hex_to_rgb( "15dc5a" );
+    const rgb2 = hex_to_rgb( "9529f9" );
     
     let active_color;
     
@@ -443,7 +403,7 @@ function start() {
         document.getElementById("random_gradient")
     ];
     
-    main_animation();
+    //main_animation();
 
     //  Hide all palettes
     //  Hide the section that shows the palettes
