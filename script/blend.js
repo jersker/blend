@@ -138,7 +138,7 @@ function shades_tints( colors, red, green, blue ) {
     const shades = Array.from( colors ).slice( shade_min, shade_max );
     const tints = Array.from( colors ).slice( tint_min, tint_max );
     //  How much the color number should increment
-    const shade = ( value ) => Math.floor( value / shade_max );
+    const shade = ( value ) => Math.floor( (value / shade_max) / 1.5 );
     const tint = ( value ) => Math.floor( ( 255 - value ) / tint_min );
     const red_shade = shade( red ), green_shade = shade( green ), blue_shade = shade( blue );  
     const red_tint = tint( red ), green_tint = tint( green ), blue_tint = tint( blue );
@@ -227,7 +227,9 @@ class Palette {
 		let colors = palette.children;
 
         if ( palette.parentElement.classList.contains("color_container") ) {
+            
             shades_tints(colors, r1, g1, b1);
+            
         }
         else if ( palette.parentElement.classList.contains("gradient_container") ||
             palette.getAttribute("id") == "animation_palette" ) {
@@ -312,19 +314,6 @@ const main_animation = () => {
     }, 2000);
 }
 
-const validate_input = ( input, hex_re, rgb_re ) => {
-    let valid = true;
-
-    if ( input.match( hex_re ) || input.match( rgb_re ) ) {
-        valid = true;
-    }
-    else {
-        valid = false;
-    }
-
-    return valid;
-}
-
 const input_to_colors = ( input, color_type ) => {
     let rgb = { r : null, g : null, b : null };
 
@@ -346,34 +335,26 @@ function begin( input_type ) {
     const color_containers = document.querySelectorAll(".color_container");
     const gradient_palette = document.getElementById("gradient_palette");
     const gradient_container = document.querySelectorAll(".gradient_container");
+    const inputs = document.getElementById(input_type).querySelectorAll(".color_input");
 
     const hex_re = /^#?([0-9A-F]{3}){1,2}$/i;
     const rgb_re = /^(rgb)?\(?([01]?\d\d?|2[0-4]\d|25[0-5])((\,)|(\ )|(\,( )))([01]?\d\d?|2[0-4]\d|25[0-5])((\,)|(\ )|(\,( )))(([01]?\d\d?|2[0-4]\d|25[0-5])\)?)$/;
-    
-    let color_type;
-    let inputs = document.getElementById(input_type).querySelectorAll(".color_input");
+    const validate_input = ( input, hex_re, rgb_re ) => ( input.match( hex_re ) || input.match( rgb_re ) );
 
+    let color_type;
     let colors = {};
 
     inputs.forEach( ( field, index ) => {
-        let input = field.value;
+        const input = field.value;
         if ( input ) {
             if ( validate_input( input, hex_re, rgb_re ) ) {
-                if ( input.match( hex_re ) ) {
-                    color_type = "hex";
-                }
-                else if ( input.match( rgb_re ) ) {
-                    color_type = "rgb";
-                }
-
-                colors[index] = input_to_colors( input, color_type );
-            }
-            else {
+                ( input.match( hex_re ) ) ? color_type = "hex" : color_type = "rgb";
+                colors[ index ] = input_to_colors( input, color_type );
+            } else {
                 console.log("error: not valid input");
             }
-        }
-        else {
-            console.log("error");
+        } else {
+            console.log("error: no input");
         }
     });
 
@@ -381,8 +362,7 @@ function begin( input_type ) {
         color_palette( colors[0].r, colors[0].g, colors[0].b );
         show_hide_sections( color_containers, gradient_container );
         scroll();
-    }
-    else {
+    } else {
         new Palette( gradient_palette, colors[0].r, colors[0].g, colors[0].b, 
         colors[1].r, colors[1].g, colors[1].b );
         show_hide_sections( gradient_container, color_containers );
@@ -403,7 +383,7 @@ function start() {
         document.getElementById("random_gradient")
     ];
     
-    //main_animation();
+    main_animation();
 
     //  Hide all palettes
     //  Hide the section that shows the palettes
