@@ -21,25 +21,146 @@
         <section id="blend_page" class="landing">
 
             <div class="landing_box">
-                    <div class="title_container">
-                        <h1>
-                            ./blend.js
-                        </h1>
-                    </div>
-                    <h2>
-                        Create a color palette!
-                    </h2>
+                    <h1>
+                        blend.js
+                    </h1>
                     
                     <p>
                         Search colors by hex and RGB codes, blend colors to make gradients, or generate one at random!
                     </p>
                     
-                    <div class="landing_button" id="landing_button_desktop">
-                        Begin
+                </div>
+
+                <div id="container">
+
+                <div id="bar">
+                    <label for="search_tab">Search</label>
+                    <label for="blend_tab">Blend</label>
+                    <label for="random_tab">Random</label>
+                </div>
+
+                <input id="search_tab" type="radio" name="slider" title="slide1" checked="checked" class="slider__nav"/>
+                <input id="blend_tab" type="radio" name="slider" title="slide2" class="slider__nav"/>
+                <input id="random_tab" type="radio" name="slider" title="slide3" class="slider__nav"/>
+
+                <div id="line_container">
+                    <div id="line"></div>
+                </div>
+
+                <div id="blend_container">
+                    <div id="content_container">
+
+                    <div class="slide" id="search_slide">
+                        <div class="search_color_container input_container"> 
+                            <input class="color_input search_input" id="search_one" type="text" placeholder="#FFFEEE, or 255, 255, 255" value="">
+                        </div>
+                        
+                        <div id="search_button" class="button">
+                            Search
+                        </div>
+                    </div>
+
+                    <div class="slide" id="blend_slide">
+                        <div id="blend_inputs_container">
+                        <div class="blend_color_container input_container">
+                            <input class="color_input blend_input" id="blend_one" type="text" placeholder="#FFFEEE, or 255, 255, 255" value="">
+                        </div>
+                        <div class="blend_color_container input_container">
+                            <input class="color_input blend_input" id="blend_two" type="text" placeholder="#FFFEEE, or 255, 255, 255" value="">
+                        </div>
+                        </div>
+                        <div id="blend_button_new" class="button">
+                            Blend
+                        </div>
+                        <div id="blend_button" class="button">
+                            Blend
+                        </div>
+                    </div>
+
+                    <div class="slide" id="random_slide">
+                        <div id="random_button" class="button">
+                            Random Color
+                        </div>
+                        <div id="random_gradient" class="button">
+                            Random Gradient
+                        </div>
+                        <div id="random_gradient_new" class="button">
+                            Random Gradient
+                        </div>
                     </div>
                     
+                    </div>
                 </div>
+                </div>
+                     
+                <!--
+                    <div id="bar">
+                        <label for="search_tab">Search</label>
+                        <label for="blend_tab">Blend</label>
+                        <label for="random_tab">Random</label>
+                    </div>
+                    <div id="line"></div>
+
+                    <input id="search_tab" type="radio" name="slider" title="slide1" checked="checked" class="slider__nav"/>
+                    <input id="blend_tab" type="radio" name="slider" title="slide2" class="slider__nav"/>
+                    <input id="random_tab" type="radio" name="slider" title="slide3" class="slider__nav"/>
+
+                    <div class="slider__inner">
+    
+                        <div class="slide" id="search_slide">
+                            
+                            <div class="slide_title">
+                                <h2>Search Color</h2>
+                            </div>
+                            
+                            <div class="message">
+                                Message
+                            </div>
+                            
+                            <div class="search_color_container input_container"> 
+                                <input class="color_input search_input" id="search_one" type="text" placeholder="here" value="">
+                            </div>
+                            
+                            <div id="search_button" class="button">
+                                Search
+                            </div>
+                        </div>
+                            
+                        <div class="slide" id="blend_slide">
+                            <div class="slide_title">
+                                <h2>Blend Colors</h2>
+                            </div>
+                            <div class="message">
+                                Message
+                            </div>
+                                
+                                <div class="blend_color_container input_container">
+                                    <div class="blend_color_title">Color One</div>
+                                    <input class="color_input blend_input" id="blend_one" type="text" placeholder="here" value="">
+                                </div>
+                                
+                                <div class="blend_color_container input_container">
+                                    <div class="blend_color_title">Color Two</div>
+                                    <input class="color_input blend_input" id="blend_two" type="text" placeholder="here" value="">
+                                </div>
+                                
+                            <div id="blend_button_new" class="button">
+                                Blend
+                            </div>
+                            <div id="blend_button" class="button">
+                                Blend
+                            </div>
+                            
+                        </div>
+                            
+                        
+                        
+                    </div> 
+                    -->
+           <!-- </div>--> <!-- blend_container -->
+
                     
+                <!--
                 <div id="blend_animation">
                     
                     <div id="animation_gradient" class="gradient">
@@ -76,124 +197,12 @@
                         <div class="animation_color"></div>
                     </div>
                 </div>
-
-                <div class="landing_button" id="landing_button_mobile">
-                    Begin
-                </div>
-
-            <div id="mobile_bg" class="bg">
-                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                    id="visual" viewBox="0 0 675 900" preserveAspectRatio="none" version="1.1">
-                    <path d="M0 464L28.2 489C56.3 514 112.7 564 169 588.3C225.3 612.7 281.7 611.3 337.8 575.5C394 539.7 450 469.3 506.2 448.8C562.3 428.3 618.7 457.7 646.8 472.3L675 487L675 901L646.8 901C618.7 901 562.3 901 506.2 901C450 901 394 901 337.8 901C281.7 901 225.3 901 169 901C112.7 901 56.3 901 28.2 901L0 901Z"
-                    fill="#2A2A2A" stroke-linecap="round" stroke-linejoin="miter"/>
-                </svg>
-            </div>
-            <div id="desktop_bg" class="bg">
-                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                    id="visual" viewBox="0 0 700 600" preserveAspectRatio="none" version="1.1">
-                    <path d="M278 0L300.2 33.3C322.3 66.7 366.7 133.3 358.2 200C349.7 266.7 288.3 333.3 266.2 400C244 466.7 261 533.3 269.5 566.7L278 600L0 600L0 566.7C0 533.3 0 466.7 0 400C0 333.3 0 266.7 0 200C0 133.3 0 66.7 0 33.3L0 0Z"
-                    fill="#2A2A2A" stroke-linecap="round" stroke-linejoin="miter"/>
-                </svg>
-            </div>
+                -->
 
         </section> <!-- blend_page -->
         
         <section id="blend_section">
-            <div id="blend_container">
-                    <div id="bar">
-                        <label for="search_tab">Search</label>
-                        <label for="blend_tab">Blend</label>
-                        <label for="random_tab">Random</label>
-                    </div>
-                        <input id="search_tab" type="radio" name="slider" title="slide1" checked="checked" class="slider__nav"/>
-                        <input id="blend_tab" type="radio" name="slider" title="slide2" class="slider__nav"/>
-                        <input id="random_tab" type="radio" name="slider" title="slide3" class="slider__nav"/>
-                    
-                    <div id="line"></div>
-                    
-                    <div class="slider__inner">
-    
-                        <div class="slide" id="search_slide">
-                            
-                            <div class="slide_title">
-                                <h2>Search Color</h2>
-                            </div>
-                            
-                            <div id="color_slide_description" class="slide_description">
-                                Search colors by hex or RGB value.
-                                <br>
-                                <br>
-                                Hex values can be in either format: #ADFADF or #ADF
-                                <br><br>
-                                RGB values should be between 0 and 255.
-                            </div>
-                            
-                            <div class="message">
-                                Message
-                            </div>
-                            
-                            <div class="search_color_container input_container"> 
-                                <input class="color_input search_input" id="search_one" type="text" placeholder="here" value="">
-                            </div>
-                            
-                            <div id="search_button" class="button">
-                                Search
-                            </div>
-                        </div>
-                            
-                        <div class="slide" id="blend_slide">
-                            <div class="slide_title">
-                                <h2>Blend Colors</h2>
-                            </div>
-                            <div>
-                                Blend two colors to make a gradient.
-                                <br><br>
-                                Values can be two hexadecimal colors, two RGB colors, or one of each.
-                            </div>
-                            <div class="message">
-                                Message
-                            </div>
-                                
-                                <div class="blend_color_container input_container">
-                                    <div class="blend_color_title">Color One</div>
-                                    <input class="color_input blend_input" id="blend_one" type="text" placeholder="here" value="">
-                                </div>
-                                
-                                <div class="blend_color_container input_container">
-                                    <div class="blend_color_title">Color Two</div>
-                                    <input class="color_input blend_input" id="blend_two" type="text" placeholder="here" value="">
-                                </div>
-                                
-                            <div id="blend_button_new" class="button">
-                                Blend
-                            </div>
-                            <div id="blend_button" class="button">
-                                Blend
-                            </div>
-                            
-                        </div>
-                            
-                        <div class="slide" id="random_slide">
-                            <div class="slide_title">
-                                <h2>Random</h2>
-                            </div>
-                            <div>
-                                Click "Random Color" to generate a random color palette, or click
-                                "Random Gradient" to blend two random colors.
-                            </div>
-                            <div id="random_button" class="button">
-                                Random Color
-                            </div>
-                            <div id="random_gradient" class="button">
-                                Random Gradient
-                            </div>
-                            <div id="random_gradient_new" class="button">
-                                Random Gradient
-                            </div>
-                        </div>
-                        
-                    </div> <!-- slider__inner -->
-            </div> <!-- blend_container -->
+
         </section>
         
         <section id="colors_section">
@@ -384,7 +393,8 @@
     </main>
 
     <footer>
-    
+        Footer Text
+        <div id="copyright">BLEND.js by Jessica</div>
     </footer>
     
     <script src="script/load.js"></script>

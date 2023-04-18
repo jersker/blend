@@ -383,7 +383,7 @@ function start() {
         document.getElementById("random_gradient")
     ];
     
-    main_animation();
+    //main_animation();
 
     //  Hide all palettes
     //  Hide the section that shows the palettes
