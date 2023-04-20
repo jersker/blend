@@ -12,12 +12,12 @@ NOTE: This is currently being migrated from Gitlab. It still needs some love. Gi
 
 > #### Example Formats
 > `DAD`  
-> `#dad` 
-> `DAD357` 
-> `255 255 255` 
-> `255, 255, 255` 
-> `RGB(255, 255, 255)` 
-> `rgb(255 255 255)` 
+> `#dad`    
+> `DAD357`   
+> `255 255 255`   
+> `255, 255, 255`    
+> `RGB(255, 255, 255)`    
+> `rgb(255 255 255)`   
 
 ## Search Tab
 Enter one color code with either of the following formats:
