@@ -6,7 +6,18 @@ display their corresponding palettes.
 
 </div align="center">
 
+NOTE: This is currently being migrated from Gitlab. It still needs some love. Give it time.
+
 ---
+
+> #### Example Formats
+> `DAD`  
+> `#dad`
+> `DAD357`
+> `255 255 255`
+> `255, 255, 255`
+> `RGB(255, 255, 255)`
+> `rgb(255 255 255)`
 
 ## Search Tab
 Enter one color code with either of the following formats:
@@ -14,27 +25,11 @@ Enter one color code with either of the following formats:
 - 3 or 6 character hexadecimal value (charactera 0-9 and A-F).
 - Individual red, green, and blue values (integers 0-255).
 
-#### Example
-> `DAD`  
-> `DAD357`  
-> `255`, `255`, `255`
-
-<img style="margin:auto; border-radius:20px;" width="400px" src="readme-display/search-input.png" />
-<img style="margin:auto; border-radius:20px;" width="400px" src="readme-display/search-palette.png" />
-
 ## Blend Tab
 Enter two color codes with either of the following formats:
 
 - 3 or 6 character hexadecimal value (charactera 0-9 and A-F).
 - Individual red, green, and blue values (integers 0-255).
-
-#### Example
-> `DAD` and `DAD357`  
-> `255`, `255`, `255` and `FFFEEE`  
-> `110`, `120`, `130` and `255`, `255`, `255`  
-
-<img style="margin:auto; border-radius:20px;" width="400px" src="readme-display/blend-input.png" />
-<img style="margin:auto; border-radius:20px;" width="400px" src="readme-display/blend-palette.png" />
 
 ## Random Tab
 This tab can be used to generate either a single random color with a corresponding 
