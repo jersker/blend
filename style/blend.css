@@ -248,6 +248,10 @@ div#container div#blend_container div#content_container {
   display: flex;
   /* slide */
 }
+div#container div#blend_container div#content_container div#random_slide {
+  flex-direction: column;
+  justify-content: space-around;
+}
 div#container div#blend_container div#content_container div.slide {
   width: 33.33%;
   padding: 1em;
@@ -281,12 +285,9 @@ div#container div#blend_container div#content_container div.slide div.input_cont
 div#container div#blend_container div#content_container div.slide div.input_container input.color_input:focus {
   outline: none;
 }
-div#container div#blend_container div#content_container div.slide div#search_button {
-  background-color: #8aebab;
-  opacity: 0.7;
-}
 div#container div#blend_container div#content_container div.slide div.button {
   color: #1e1e1e;
+  display: block;
   border-radius: 8px;
   padding: 1em;
   font-family: "Fira Mono", monospace;
@@ -299,6 +300,9 @@ div#container div#blend_container div#content_container div.slide div.button {
 }
 div#container div#blend_container div#content_container div.slide div.button:hover {
   cursor: pointer;
+}
+div#container div#blend_container div#content_container div.slide div#search_button {
+  background-color: #8aebab;
 }
 div#container div#blend_container div#content_container div.slide div#blend_button {
   background: #8aebab;
@@ -320,6 +324,35 @@ div#container div#blend_container div#content_container div.slide div#blend_butt
   top: 50%;
   right: 1em;
   transform: translateY(-50%);
+  background: #d9b5fd;
+  background: -webkit-linear-gradient(top left, #d9b5fd, #8aebab);
+  background: -moz-linear-gradient(top left, #d9b5fd, #8aebab);
+  background: linear-gradient(to bottom right, #d9b5fd, #8aebab);
+  border: 1px solid #d9b5fd;
+  position: absolute;
+  z-index: 0;
+}
+div#container div#blend_container div#content_container div.slide div#random_button {
+  background: #d9b5fd;
+}
+div#container div#blend_container div#content_container div.slide div#random_gradient {
+  background: #8aebab;
+  background: -webkit-linear-gradient(top left, #8aebab, #d9b5fd);
+  background: -moz-linear-gradient(top left, #8aebab, #d9b5fd);
+  background: linear-gradient(to bottom right, #8aebab, #d9b5fd);
+  border: 1px solid #8aebab;
+  opacity: 1;
+  z-index: 1;
+  -webkit-transition: opacity 0.2s, border 0.2s;
+  -ms-transition: opacity 0.2s, border 0.2s;
+  -o-transition: opacity 0.2s, border 0.2s;
+  transition: opacity 0.2s, border 0.2s;
+}
+div#container div#blend_container div#content_container div.slide div#random_gradient:hover {
+  opacity: 0;
+}
+div#container div#blend_container div#content_container div.slide div#random_gradient_new {
+  bottom: calc(1em * 1.5);
   background: #d9b5fd;
   background: -webkit-linear-gradient(top left, #d9b5fd, #8aebab);
   background: -moz-linear-gradient(top left, #d9b5fd, #8aebab);

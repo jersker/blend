@@ -295,24 +295,6 @@ const show_hide_sections = ( containers_show, containers_hide ) => {
         container.classList.add("section-hidden");
     });
 }
-    
-const main_animation = () => {
-    const animation_palette = document.getElementById("animation_palette");
-    const animation_colors = Array.from(animation_palette.children);
-    
-    const rgb1 = hex_to_rgb( "15dc5a" );
-    const rgb2 = hex_to_rgb( "9529f9" );
-    
-    let active_color;
-    
-    new Palette(animation_palette, rgb1.r, rgb1.g, rgb1.b, rgb2.r, rgb2.g, rgb2.b);
-
-    setInterval(function() {
-        let random = Math.round( Math.random() * 8 );
-        active_color = animation_colors[random];
-        active_color.click();
-    }, 2000);
-}
 
 const input_to_colors = ( input, color_type ) => {
     let rgb = { r : null, g : null, b : null };
@@ -331,7 +313,7 @@ const input_to_colors = ( input, color_type ) => {
     return rgb;
 }
     
-function begin( input_type ) {
+function begin( input_type, button ) {
     const color_containers = document.querySelectorAll(".color_container");
     const gradient_palette = document.getElementById("gradient_palette");
     const gradient_container = document.querySelectorAll(".gradient_container");
@@ -343,29 +325,46 @@ function begin( input_type ) {
 
     let color_type;
     let colors = {};
+    let blend;
 
-    inputs.forEach( ( field, index ) => {
-        const input = field.value;
-        if ( input ) {
-            if ( validate_input( input, hex_re, rgb_re ) ) {
-                ( input.match( hex_re ) ) ? color_type = "hex" : color_type = "rgb";
-                colors[ index ] = input_to_colors( input, color_type );
+    if ( input_type != "random_slide" ) {
+
+        ( input_type == "search_slide" ) ? blend = false : blend = true;
+        
+        inputs.forEach( ( field, index ) => {
+            const input = field.value;
+            if ( input ) {
+                if ( validate_input( input, hex_re, rgb_re ) ) {
+                    ( input.match( hex_re ) ) ? color_type = "hex" : color_type = "rgb";
+                    colors[ index ] = input_to_colors( input, color_type );
+                } else {
+                    console.log("error: not valid input");
+                }
             } else {
-                console.log("error: not valid input");
+                console.log("error: no input");
             }
-        } else {
-            console.log("error: no input");
-        }
-    });
+        });
 
-    if ( input_type == "search_slide" ) {
-        color_palette( colors[0].r, colors[0].g, colors[0].b );
-        show_hide_sections( color_containers, gradient_container );
-        scroll();
     } else {
+        if ( button.getAttribute("id") == "random_button" ) {
+            blend = false;
+            colors[0] = hex_to_rgb( hex_rand() );
+        }
+        else {
+            blend = true;
+            colors[0] = hex_to_rgb( hex_rand() );
+            colors[1] = hex_to_rgb( hex_rand() );
+        }
+    }
+
+    if ( blend ) {
         new Palette( gradient_palette, colors[0].r, colors[0].g, colors[0].b, 
         colors[1].r, colors[1].g, colors[1].b );
         show_hide_sections( gradient_container, color_containers );
+        scroll();
+    } else {
+        color_palette( colors[0].r, colors[0].g, colors[0].b );
+        show_hide_sections( color_containers, gradient_container );
         scroll();
     }
 }
@@ -375,7 +374,6 @@ function start() {
     const search_inputs = document.querySelectorAll("div#search_slide input");
     const blend_inputs = document.querySelectorAll("div#blend_slide input");
     const color_palettes = document.querySelectorAll("div.palette_container");
-    const landing_button = document.querySelectorAll("div.landing_button");
     const buttons = [
         document.getElementById("search_button"),
         document.getElementById("blend_button"),
@@ -391,16 +389,32 @@ function start() {
         palette.classList.add("section-hidden");
     });
     document.querySelector("section#colors_section").classList.add("section-hidden");
+
+    const get_slide_name = ( field ) => {
+        let slide;
+
+        if ( field.parentNode.parentNode.getAttribute("class") == "slide" ) {
+            slide = field.parentNode.parentNode.getAttribute("id");
+        }
+        else if ( field.parentNode.parentNode.parentNode.getAttribute("class") == "slide" ) {
+            slide = field.parentNode.parentNode.parentNode.getAttribute("id");
+        }
+        else {
+            slide = field.parentNode.getAttribute("id");
+        }
+
+        return slide;
+    }
     
     //  Control input
     input_fields.forEach(field => {
         field.addEventListener("keydown", event => {
             let key = event.charCode || event.keyCode;
-            
             //  Enter key
             if (key === 13) {
                 //  Messy, but gets the button ID of the slide where enter was pressed
-                begin( field.parentNode.parentNode.getAttribute("id") );
+                const slide = get_slide_name( field );
+                begin( slide, null );
                 //  Clear all input
                 input_fields.forEach(field => {
                     field.value = "";
@@ -429,21 +443,12 @@ function start() {
 
     //  todo: fix random buttons
     buttons.forEach(button => {
+        let slide = button.parentNode.getAttribute("id");
         button.addEventListener("click", function() {
-            begin( this.parentNode.getAttribute("id") );
+            begin( slide, button );
             //  Clear all input
             input_fields.forEach( field => {
                 field.value = "";
-            });
-        });
-    });
-
-    landing_button.forEach(button => {
-        button.addEventListener("click", function() {
-            let scroll_y = blend_page.offsetHeight;
-            window.scroll({
-                top: scroll_y,
-                behavior: 'smooth'
             });
         });
     });
