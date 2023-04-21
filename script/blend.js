@@ -81,8 +81,11 @@ function complement( red, green, blue ) {
             ( r = green, g = red, b = red )
         )
     );
-	( red == blue && red == green ) && ( r = 255 - red, g = 255 - green, b = 255 - blue );
 
+    ( red == blue ) && ( r = green, g = red, b = green );
+    ( red == green ) && ( r = blue, g = blue, b = red );
+    ( red == blue && red == green ) && ( r = 255 - red, g = 255 - green, b = 255 - blue );
+    
 	return {
         r : r,
         g : g,
