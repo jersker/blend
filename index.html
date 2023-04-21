@@ -21,27 +21,33 @@
         <section id="blend_page" class="landing">
 
             <div class="landing_box">
-                    <h1>
-                        blend.js
-                    </h1>
-                    
-                    <p>
-                        Search colors by hex and RGB codes, blend colors to make gradients, or generate one at random!
-                    </p>
-                    
+                <h1>blend.js</h1>
+                <p>
+                    Search colors by hex and RGB codes, blend colors to make gradients, or generate one at random!
+                </p>    
+            </div>
+
+            <div id="container">
+
+                <div id="help">
+                    <svg id="help_icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                    <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                    </svg>    
+                    <div id="help_message">What is a valid color code?</div>
                 </div>
 
-                <div id="container">
+                <div id="error_message">Error</div>
+
+                <input id="search_tab" type="radio" name="slider" title="slide1" checked="checked" class="slider__nav"/>
+                <input id="blend_tab" type="radio" name="slider" title="slide2" class="slider__nav"/>
+                <input id="random_tab" type="radio" name="slider" title="slide3" class="slider__nav"/>
 
                 <div id="bar">
                     <label for="search_tab">Search</label>
                     <label for="blend_tab">Blend</label>
                     <label for="random_tab">Random</label>
                 </div>
-
-                <input id="search_tab" type="radio" name="slider" title="slide1" checked="checked" class="slider__nav"/>
-                <input id="blend_tab" type="radio" name="slider" title="slide2" class="slider__nav"/>
-                <input id="random_tab" type="radio" name="slider" title="slide3" class="slider__nav"/>
 
                 <div id="line_container">
                     <div id="line"></div>
@@ -62,12 +68,12 @@
 
                     <div class="slide" id="blend_slide">
                         <div id="blend_inputs_container">
-                        <div class="blend_color_container input_container">
-                            <input class="color_input blend_input" id="blend_one" type="text" placeholder="#FFFEEE, or 255, 255, 255" value="">
-                        </div>
-                        <div class="blend_color_container input_container">
-                            <input class="color_input blend_input" id="blend_two" type="text" placeholder="#FFFEEE, or 255, 255, 255" value="">
-                        </div>
+                            <div class="blend_color_container input_container">
+                                <input class="color_input blend_input" id="blend_one" type="text" placeholder="#FFFEEE, or 255, 255, 255" value="">
+                            </div>
+                            <div class="blend_color_container input_container">
+                                <input class="color_input blend_input" id="blend_two" type="text" placeholder="#FFFEEE, or 255, 255, 255" value="">
+                            </div>
                         </div>
                         <div id="blend_button_new" class="button">
                             Blend
@@ -91,113 +97,7 @@
                     
                     </div>
                 </div>
-                </div>
-                     
-                <!--
-                    <div id="bar">
-                        <label for="search_tab">Search</label>
-                        <label for="blend_tab">Blend</label>
-                        <label for="random_tab">Random</label>
-                    </div>
-                    <div id="line"></div>
-
-                    <input id="search_tab" type="radio" name="slider" title="slide1" checked="checked" class="slider__nav"/>
-                    <input id="blend_tab" type="radio" name="slider" title="slide2" class="slider__nav"/>
-                    <input id="random_tab" type="radio" name="slider" title="slide3" class="slider__nav"/>
-
-                    <div class="slider__inner">
-    
-                        <div class="slide" id="search_slide">
-                            
-                            <div class="slide_title">
-                                <h2>Search Color</h2>
-                            </div>
-                            
-                            <div class="message">
-                                Message
-                            </div>
-                            
-                            <div class="search_color_container input_container"> 
-                                <input class="color_input search_input" id="search_one" type="text" placeholder="here" value="">
-                            </div>
-                            
-                            <div id="search_button" class="button">
-                                Search
-                            </div>
-                        </div>
-                            
-                        <div class="slide" id="blend_slide">
-                            <div class="slide_title">
-                                <h2>Blend Colors</h2>
-                            </div>
-                            <div class="message">
-                                Message
-                            </div>
-                                
-                                <div class="blend_color_container input_container">
-                                    <div class="blend_color_title">Color One</div>
-                                    <input class="color_input blend_input" id="blend_one" type="text" placeholder="here" value="">
-                                </div>
-                                
-                                <div class="blend_color_container input_container">
-                                    <div class="blend_color_title">Color Two</div>
-                                    <input class="color_input blend_input" id="blend_two" type="text" placeholder="here" value="">
-                                </div>
-                                
-                            <div id="blend_button_new" class="button">
-                                Blend
-                            </div>
-                            <div id="blend_button" class="button">
-                                Blend
-                            </div>
-                            
-                        </div>
-                            
-                        
-                        
-                    </div> 
-                    -->
-           <!-- </div>--> <!-- blend_container -->
-
-                    
-                <!--
-                <div id="blend_animation">
-                    
-                    <div id="animation_gradient" class="gradient">
-                    </div>
-                    
-                    <div class="about">
-                        <div class="active_color">
-                        </div>
-                        <table class="info">
-                            <tr>
-                                <td class="hex_label"></td>
-                                <td class="hex_value"></td>
-                            </tr>
-                            <tr>
-                                <td class="rgb_label"></td>
-                                <td class="rgb_value"></td>
-                            </tr>
-                            <tr>
-                                <td class="cmyk_label"></td>
-                                <td class="cmyk_value"></td>
-                            </tr>
-                        </table>
-                    </div>
-                    
-                    <div id="animation_palette">
-                        <div class="animation_color"></div>
-                        <div class="animation_color"></div>
-                        <div class="animation_color"></div>
-                        <div class="animation_color"></div>
-                        <div class="animation_color"></div>
-                        <div class="animation_color"></div>
-                        <div class="animation_color"></div>
-                        <div class="animation_color"></div>
-                        <div class="animation_color"></div>
-                    </div>
-                </div>
-                -->
+            </div>
 
         </section> <!-- blend_page -->
         
@@ -395,6 +295,7 @@
     <footer>
         Footer Text
         <div id="copyright">BLEND.js by Jessica</div>
+        
     </footer>
     
     <script src="script/load.js"></script>

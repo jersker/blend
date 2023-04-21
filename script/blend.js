@@ -215,7 +215,7 @@ function create_labels(color) {
     info_table.querySelector("td.rgb_label").innerHTML = rgb_label;
     info_table.querySelector("td.cmyk_label").innerHTML = cmyk_label;
     
-    info_table.querySelector("td.hex_value").innerHTML = '#' + color.hex;
+    info_table.querySelector("td.hex_value").innerHTML = `#${color.hex}`;
     info_table.querySelector("td.rgb_value").innerHTML = color.info_rgb;
     info_table.querySelector("td.cmyk_value").innerHTML = color.info_cmyk;
     
@@ -227,22 +227,19 @@ class Palette {
 		let colors = palette.children;
 
         if ( palette.parentElement.classList.contains("color_container") ) {
-            
             shades_tints(colors, r1, g1, b1);
-            
-        }
-        else if ( palette.parentElement.classList.contains("gradient_container") ||
-            palette.getAttribute("id") == "animation_palette" ) {
+        } else {
             gradient_shades(colors, r1, g1, b1, r2, g2, b2)
             
             const gradient = palette.parentElement.querySelector("div.gradient");
-            const first_color = "rgb("+ r1 + "," + g1 + "," + b1 +")";
-            const last_color = "rgb("+ r2 + "," + g2 + "," + b2 +")";
-            
+
+            const first_color = `rgb(${r1}, ${g1}, ${b1})`;
+            const last_color = `rgb(${r2}, ${g2}, ${b2})`;
+
             gradient.setAttribute("style",
-                "background:-webkit-linear-gradient(left, " + first_color + ', ' + last_color + ")",
-                "background:-moz-linear-gradient(left, " + first_color + ', ' + last_color + ")",
-                "background:linear-gradient(left, " + first_color + ', ' + last_color + ")"
+                `background:-webkit-linear-gradient( left, ${first_color}, ${last_color} )`,
+                `background:-moz-linear-gradient( left, ${first_color}, ${last_color} )`,
+                `background:linear-gradient( left, ${first_color}, ${last_color} )`
             );
         }
         
@@ -250,10 +247,10 @@ class Palette {
 
         Array.from(colors).forEach(color => {
             color.hex = rgb_to_hex(color.red, color.green, color.blue);
-            color.info_rgb = color.red + ", " + color.green + ", " + color.blue;
+            color.info_rgb = `${color.red}, ${color.green}, ${color.blue}`;
             color.info_cmyk = get_cmyk(color.red, color.green, color.blue);
-            color.info_cmyk = color.info_cmyk.c + ", " + color.info_cmyk.m + ", " + color.info_cmyk.y + ", " + color.info_cmyk.k;
-            color.style.backgroundColor = "rgb(" + color.red + "," + color.green + "," + color.blue + ")";
+            color.info_cmyk = `${color.info_cmyk.c}, ${color.info_cmyk.m}, ${color.info_cmyk.y}, ${color.info_cmyk.k}`;
+            color.style.backgroundColor = `rgb(${color.red}, ${color.green}, ${color.blue})`;
             color.classList.remove("clicked");
             
             color.addEventListener("click", function() {
@@ -326,6 +323,9 @@ function begin( input_type, button ) {
     let color_type;
     let colors = {};
     let blend;
+    let invalid_code = "";
+
+    error_message( "hide" );
 
     if ( input_type != "random_slide" ) {
 
@@ -333,46 +333,97 @@ function begin( input_type, button ) {
         
         inputs.forEach( ( field, index ) => {
             const input = field.value;
+            
             if ( input ) {
                 if ( validate_input( input, hex_re, rgb_re ) ) {
                     ( input.match( hex_re ) ) ? color_type = "hex" : color_type = "rgb";
                     colors[ index ] = input_to_colors( input, color_type );
                 } else {
-                    console.log("error: not valid input");
+                    ( blend == true ) ? invalid_code = "blend_invalid" : invalid_code = "search_invalid";
                 }
             } else {
-                console.log("error: no input");
+                //  if not input
+                ( blend == true ) ? invalid_code = "blend_empty" : invalid_code = "search_empty";
             }
+
         });
 
     } else {
         if ( button.getAttribute("id") == "random_button" ) {
             blend = false;
             colors[0] = hex_to_rgb( hex_rand() );
-        }
-        else {
+        } else {
             blend = true;
             colors[0] = hex_to_rgb( hex_rand() );
             colors[1] = hex_to_rgb( hex_rand() );
         }
     }
 
-    if ( blend ) {
-        new Palette( gradient_palette, colors[0].r, colors[0].g, colors[0].b, 
-        colors[1].r, colors[1].g, colors[1].b );
-        show_hide_sections( gradient_container, color_containers );
-        scroll();
+    if ( invalid_code == "" ) {
+        if ( blend ) {
+            new Palette( gradient_palette, colors[0].r, colors[0].g, colors[0].b, 
+            colors[1].r, colors[1].g, colors[1].b );
+            show_hide_sections( gradient_container, color_containers );
+            scroll();
+        } else {
+            color_palette( colors[0].r, colors[0].g, colors[0].b );
+            show_hide_sections( color_containers, gradient_container );
+            scroll();
+        }
     } else {
-        color_palette( colors[0].r, colors[0].g, colors[0].b );
-        show_hide_sections( color_containers, gradient_container );
-        scroll();
+        error_message( invalid_code );
+    }
+}
+
+const reset_fields = () => {
+    const search_inputs = document.querySelectorAll("div#search_slide input");
+    const blend_inputs = document.querySelectorAll("div#blend_slide input");
+
+    //  Reset input fields when user begins typing 
+    //  on a different slide
+    search_inputs.forEach( s_input => {
+        s_input.addEventListener("change", function () {
+            blend_inputs.forEach( b_input => {
+                b_input.value = "";
+            });
+        });
+    });
+    blend_inputs.forEach( b_input => {
+        b_input.addEventListener("change", function () {
+            search_inputs.forEach( s_input => {
+                s_input.value = "";
+            });
+        });
+    });
+}
+
+const error_message = ( code ) => {
+    const error_dom = document.getElementById("error_message");
+
+    switch ( code ) {
+        case "search_invalid":
+            error_dom.style.opacity = 1;
+            error_dom.innerHTML = "Please enter a valid color code.";
+            break;
+        case "search_empty":
+            error_dom.style.opacity = 1;
+            error_dom.innerHTML = "Please enter a color code.";
+            break;
+        case "blend_invalid":
+            error_dom.style.opacity = 1;
+            error_dom.innerHTML = "Please enter two valid color codes.";
+            break;
+        case "blend_empty":
+            error_dom.style.opacity = 1;
+            error_dom.innerHTML = "Please enter two color codes.";
+            break;
+        default:
+            error_dom.style.opacity = 0;
     }
 }
     
-function start() {
+function init() {
     const input_fields = document.querySelectorAll("input.color_input");
-    const search_inputs = document.querySelectorAll("div#search_slide input");
-    const blend_inputs = document.querySelectorAll("div#blend_slide input");
     const color_palettes = document.querySelectorAll("div.palette_container");
     const buttons = [
         document.getElementById("search_button"),
@@ -380,8 +431,6 @@ function start() {
         document.getElementById("random_button"),
         document.getElementById("random_gradient")
     ];
-    
-    //main_animation();
 
     //  Hide all palettes
     //  Hide the section that shows the palettes
@@ -412,7 +461,6 @@ function start() {
             let key = event.charCode || event.keyCode;
             //  Enter key
             if (key === 13) {
-                //  Messy, but gets the button ID of the slide where enter was pressed
                 const slide = get_slide_name( field );
                 begin( slide, null );
                 //  Clear all input
@@ -422,26 +470,7 @@ function start() {
             }
         });
     });
-    
-    //  Reset input fields when user begins typing 
-    //  on a different slide
-    search_inputs.forEach( s_input => {
-        s_input.addEventListener("change", function () {
-            blend_inputs.forEach( b_input => {
-                b_input.value = "";
-            });
-        });
-    });
-    blend_inputs.forEach( b_input => {
-        b_input.addEventListener("change", function () {
-            search_inputs.forEach( s_input => {
-                s_input.value = "";
-            });
-        });
-    });
 
-
-    //  todo: fix random buttons
     buttons.forEach(button => {
         let slide = button.parentNode.getAttribute("id");
         button.addEventListener("click", function() {
@@ -452,8 +481,12 @@ function start() {
             });
         });
     });
+
+    reset_fields();
+
+    error_message( "hide" );
 }
 
-start();
+init();
 
 });

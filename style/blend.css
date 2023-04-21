@@ -160,7 +160,7 @@ section#blend_page div.landing_box h1 {
   background-image: linear-gradient(90deg, #15dc5a 40%, #9529f9 70%);
   -webkit-background-clip: text;
   background-clip: text;
-  padding: 1em;
+  font-size: 2rem;
 }
 section#blend_page div.landing_box h2 {
   color: #15dc5a;
@@ -173,6 +173,41 @@ div#container {
   display: flex;
   flex-direction: column;
 }
+div#container div#help {
+  color: gray;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1em;
+  margin-bottom: 1em;
+}
+div#container div#help svg#help_icon {
+  -webkit-transition: 0.3s ease;
+  -moz-transition: 0.3s ease;
+  -o-transition: 0.3s ease;
+  transition: 0.3s ease;
+}
+div#container div#help svg#help_icon:hover {
+  cursor: pointer;
+  color: lightgray;
+}
+div#container div#help div#help_message {
+  font-size: 0.9rem;
+  font-style: italic;
+}
+div#container div#error_message {
+  width: 100%;
+  color: #f0648c;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin-bottom: calc(1em * 2);
+  text-align: center;
+  -webkit-transition: 0.3s ease;
+  -moz-transition: 0.3s ease;
+  -o-transition: 0.3s ease;
+  transition: 0.3s ease;
+}
 div#container div#bar {
   width: 100%;
   display: flex;
@@ -181,15 +216,20 @@ div#container div#bar label {
   cursor: pointer;
   width: 33.33%;
   color: #d9b5fd;
+  border-radius: calc(8px / 2) calc(8px / 2) 0 0;
   padding: 1em;
   font-family: "Fira Mono", monospace;
   font-size: 1rem;
   font-weight: bolder;
   text-align: center;
+  transition: all 0.4s;
+}
+div#container div#bar label:hover {
+  background-color: #181818;
 }
 div#container div#bar label:nth-of-type(2) {
-  border-left: 1px solid gray;
-  border-right: 1px solid gray;
+  border-left: 1px solid transparent;
+  border-right: 1px solid transparent;
 }
 div#container div#line_container {
   width: 100%;
@@ -217,23 +257,44 @@ div#container input.slider__nav {
 div#container input.slider__nav:checked {
   border-bottom: none;
 }
+div#container input.slider__nav:checked:nth-of-type(1) ~ div#bar label:nth-of-type(1) {
+  background-color: #2d2d2d;
+}
+div#container input.slider__nav:checked:nth-of-type(1) ~ div#bar label:not(:nth-of-type(1)) {
+  border-radius: 0;
+}
+div#container input.slider__nav:checked:nth-of-type(1) ~ div#bar label:nth-of-type(2) {
+  border-right: 1px solid #2d2d2d;
+}
 div#container input.slider__nav:checked:nth-of-type(1) ~ div#blend_container div#content_container {
   margin-left: 0;
-}
-div#container input.slider__nav:checked:nth-of-type(2) ~ div#blend_container div#content_container {
-  margin-left: -100%;
-}
-div#container input.slider__nav:checked:nth-of-type(3) ~ div#blend_container div#content_container {
-  margin-left: -200%;
 }
 div#container input.slider__nav:checked:nth-of-type(1) ~ div#line_container div#line {
   margin-left: 0%;
 }
+div#container input.slider__nav:checked:nth-of-type(2) ~ div#bar label:nth-of-type(2) {
+  background-color: #2d2d2d;
+}
+div#container input.slider__nav:checked:nth-of-type(2) ~ div#blend_container div#content_container {
+  margin-left: -100%;
+}
 div#container input.slider__nav:checked:nth-of-type(2) ~ div#line_container div#line {
-  margin-left: 33%;
+  margin-left: 33.33%;
+}
+div#container input.slider__nav:checked:nth-of-type(3) ~ div#bar label:nth-of-type(3) {
+  background-color: #2d2d2d;
+}
+div#container input.slider__nav:checked:nth-of-type(3) ~ div#bar label:not(:nth-of-type(3)) {
+  border-radius: 0;
+}
+div#container input.slider__nav:checked:nth-of-type(3) ~ div#bar label:nth-of-type(2) {
+  border-left: 1px solid #2d2d2d;
+}
+div#container input.slider__nav:checked:nth-of-type(3) ~ div#blend_container div#content_container {
+  margin-left: -200%;
 }
 div#container input.slider__nav:checked:nth-of-type(3) ~ div#line_container div#line {
-  margin-left: 66.6%;
+  margin-left: calc(66.6% + 0.5px);
 }
 div#container div#blend_container {
   width: 100%;
@@ -410,6 +471,11 @@ section#colors_section div.palette_container div.gradient {
   border: 1px solid white;
   border-radius: 8px;
   margin-bottom: 1em;
+  -webkit-transition: all 0.5s;
+  -moz-transition: all 0.5s;
+  -ms-transition: all 0.5s;
+  -o-transition: all 0.5s;
+  transition: all 0.5s;
 }
 section#colors_section div.palette_container div.about {
   width: 100%;
@@ -482,7 +548,9 @@ footer {
 }
 footer div#copyright {
   margin-top: 1em;
+  padding: 1em;
   text-align: center;
+  border-top: 1px solid gray;
 }
 .clicked {
   width: 140px !important;
