@@ -17,36 +17,92 @@
 <script>document.body.className='js';</script>
 
     <main>
-        
+
+        <div id="helper_card">
+
+            <h3>Valid Color Codes</h3>
+            <svg id="x" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
+            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+            </svg>
+
+            <div id="card_message">
+                <ul class="rules">
+                    <li class="header"><span>Hexadecimal Colors</span></li>
+                    <li>Hash symbol <span class="highlight">#</span> optional</li>
+                    <li>Use letters A-F and integers 0-9</li>
+                    <li>Must have either 3 or 6 characters following the optional hash symbol</li>
+                </ul>
+                <ul class="rules">
+                    <li class="header"><span>RGB Colors</span></li>
+                    <li>RGB prefix <span class="highlight">RGB(</span>...<span class="highlight">)</span> optional</li>
+                    <li>Use integers 0-255</li>
+                    <li>Separate values by commas, spaces, or both</li>
+                </ul>
+                <ul class="examples_table">
+                    <li>
+                        <table>
+                            <tr><td colspan="2" class="header"><span class="valid">✓</span>Valid Input</td></tr>
+                            <tr>
+                                <td class="hex_example">#FFFEEE</td>
+                                <td>RGB(255, 255, 255)</td>
+                            </tr>
+                            <tr>
+                                <td class="hex_example">DAE</td>
+                                <td>120 130 140</td>
+                            </tr>
+                            <tr>
+                                <td class="hex_example">#DEF</td>
+                                <td>120,120,120</td>
+                            </tr>
+                            <tr><td colspan="2" class="header"><span class="invalid">𐄂</span>Invalid Input</td></tr>
+                            <tr>
+                                <td class="hex_example">#DEAA</td>
+                                <td>rgb 255 255 255</td>
+                            </tr>
+                            <tr>
+                                <td class="hex_example">CAT</td>
+                                <td>rgb(300, 110, 120)</td>
+                            </tr>
+                            <tr>
+                                <td class="hex_example">##deaf</td>
+                                <td>rgb(DA, 215, 56)</td>
+                            </tr>
+                        </table>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
         <section id="blend_page" class="landing">
 
             <div class="landing_box">
                 <h1>blend.js</h1>
                 <p>
-                    Search colors by hex and RGB codes, blend colors to make gradients, or generate one at random!
+                    Search colors by hex and RGB codes, blend colors to make gradients, or generate one at random.
                 </p>    
             </div>
 
             <div id="container">
-
+ 
                 <div id="help">
-                    <svg id="help_icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+                    <svg id="help_icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
                     <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
                     <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
-                    </svg>    
+                    </svg>
                     <div id="help_message">What is a valid color code?</div>
                 </div>
 
                 <div id="error_message">Error</div>
 
-                <input id="search_tab" type="radio" name="slider" title="slide1" checked="checked" class="slider__nav"/>
-                <input id="blend_tab" type="radio" name="slider" title="slide2" class="slider__nav"/>
-                <input id="random_tab" type="radio" name="slider" title="slide3" class="slider__nav"/>
+                <input id="search_tab" type="radio" name="slider" checked="checked" class="slide_navigation"/>
+                <input id="blend_tab" type="radio" name="slider" class="slide_navigation"/>
+                <input id="random_tab" type="radio" name="slider" class="slide_navigation"/>
 
                 <div id="bar">
-                    <label for="search_tab">Search</label>
-                    <label for="blend_tab">Blend</label>
-                    <label for="random_tab">Random</label>
+                    <label class="search_tab" for="search_tab">Search</label>
+                    <label class="blend_tab" for="blend_tab">Blend</label>
+                    <label class="random_tab" for="random_tab">Random</label>
                 </div>
 
                 <div id="line_container">
