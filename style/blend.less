@@ -211,14 +211,13 @@ section#blend_page {
 } /* section#blend_page */
 
 div#helper_card {
-    width:calc( 100% - ( @main_margin * 4 ) );
     height:calc( 100% - ( @main_margin * 4 ));
     top:50%;
     left:50%;
 
     color:lightgray;
     background-color:rgba(30, 30, 30, 0.7);
-    backdrop-filter:blur(7px);
+    backdrop-filter:blur(8px);
 
     border:1px solid rgba(255, 255, 255, 0.3);
     border-radius:@main_radius;
@@ -286,7 +285,7 @@ div#helper_card {
 
                         &:after {
                             content:"";
-                            height:2px;
+                            height:1px;
                             background:-webkit-linear-gradient(left, @blend_color_one_light, @blend_color_two_light);
                             background:-moz-linear-gradient(left, @blend_color_one_light, @blend_color_two_light);
                             background:linear-gradient(to right, @blend_color_one_light, @blend_color_two_light);
@@ -834,6 +833,11 @@ footer {
 /* DESKTOP */
 
 @media only screen and (min-width:960px) {
+
+    div#helper_card {
+        width:500px;
+    }
+
     section#blend_page {
         -webkit-box-pack:center;
         -webkit-justify-content:center;
@@ -866,8 +870,12 @@ footer {
 /* TABLET */
 
 @media only screen and (max-width:959px) {
-    section#blend_page {
 
+    div#helper_card {
+        width:500px;
+    }
+
+    section#blend_page {
         justify-content:space-between;
         flex-direction:column;
 
@@ -890,6 +898,10 @@ footer {
 /* MOBILE */
 
 @media only screen and (max-width:650px) {
+
+    div#helper_card {
+        width:calc( 100% - ( @main_margin * 4 ) );
+    }
 
     section#blend_page {
         justify-content:space-between;

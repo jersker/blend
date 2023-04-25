@@ -179,13 +179,12 @@ section#blend_page div.landing_box p {
 }
 /* section#blend_page */
 div#helper_card {
-  width: calc(100% - (1em * 4));
   height: calc(100% - (1em * 4));
   top: 50%;
   left: 50%;
   color: lightgray;
   background-color: rgba(30, 30, 30, 0.7);
-  backdrop-filter: blur(7px);
+  backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 8px;
   box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.1);
@@ -244,7 +243,7 @@ div#helper_card div#card_message ul.rules li.header span {
 }
 div#helper_card div#card_message ul.rules li.header span:after {
   content: "";
-  height: 2px;
+  height: 1px;
   background: -webkit-linear-gradient(left, #8aebab, #d9b5fd);
   background: -moz-linear-gradient(left, #8aebab, #d9b5fd);
   background: linear-gradient(to right, #8aebab, #d9b5fd);
@@ -678,6 +677,9 @@ footer div#copyright {
 }
 /* DESKTOP */
 @media only screen and (min-width: 960px) {
+  div#helper_card {
+    width: 500px;
+  }
   section#blend_page {
     -webkit-box-pack: center;
     -webkit-justify-content: center;
@@ -701,6 +703,9 @@ footer div#copyright {
 }
 /* TABLET */
 @media only screen and (max-width: 959px) {
+  div#helper_card {
+    width: 500px;
+  }
   section#blend_page {
     justify-content: space-between;
     flex-direction: column;
@@ -717,6 +722,9 @@ footer div#copyright {
 }
 /* MOBILE */
 @media only screen and (max-width: 650px) {
+  div#helper_card {
+    width: calc(100% - (1em * 4));
+  }
   section#blend_page {
     justify-content: space-between;
     flex-direction: column;

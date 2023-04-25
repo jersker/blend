@@ -51,45 +51,11 @@ function rgb_to_hex(red, green, blue) {
 const triadic_one = ( red, green, blue ) => ( { r : green, g : blue, b : red } );
 const triadic_two = ( red, green, blue ) => ( { r : blue, g : red, b : green } );
 
-function complement( red, green, blue ) {
-	let r = 0, g = 0, b = 0;
-
-    ( red > blue ) && (
-        ( red > green ) ? (
-            green > blue && ( r = blue, g = ( red - green ) + blue, b = red ),
-            blue > green && ( r = green, g = red, b = ( red - blue ) + green ),
-            green == blue && ( r = green, g = red, b = red )
-        ) : ( red == green ) && (
-            ( r = green, g = green, b = red )
-        )
-    );
-    ( green > red ) && (
-        ( green > blue ) ? (
-            red > blue && ( r = ( green - red ) + blue, g = blue, b = green ),
-            blue > red && ( r = green, g = red, b = ( green - blue ) + red ),
-            blue == red && ( r = green, g = red, b = green )
-        ) : ( green == blue ) && ( 
-            (r = green, g = red, b = red )
-        )
-    );
-    ( blue > red ) && (
-        ( blue > green ) ? (
-            red > green && ( r = (green - red) + blue, g = blue, b = green ),
-            green > red && ( r = blue, g = (blue - green) + red, b = red ),
-            green == red && ( r = blue, g = blue, b = red )
-        ) : ( blue == green ) && (
-            ( r = green, g = red, b = red )
-        )
-    );
-
-    ( red == blue ) && ( r = green, g = red, b = green );
-    ( red == green ) && ( r = blue, g = blue, b = red );
-    ( red == blue && red == green ) && ( r = 255 - red, g = 255 - green, b = 255 - blue );
-    
+const complement = ( red, green, blue ) => {
 	return {
-        r : r,
-        g : g,
-        b : b
+        r : Math.max( red, blue, green ) + Math.min( red, blue, green ) - red,
+        g : Math.max( red, blue, green ) + Math.min( red, blue, green ) - green,
+        b : Math.max( red, blue, green ) + Math.min( red, blue, green ) - blue
     };
 }
     
