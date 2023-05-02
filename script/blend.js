@@ -5,6 +5,8 @@
 */
 
 document.addEventListener("DOMContentLoaded", function(event) {
+
+
     
 // Generate random
 // hexadecimal value
@@ -59,7 +61,7 @@ const complement = ( red, green, blue ) => {
     };
 }
     
-function get_cmyk( red, green, blue ) {
+const get_cmyk = ( red, green, blue ) => {
     let cyan = 0, magenta = 0, yellow = 0;
     let cmy = { cyan, magenta, yellow };
     let rgb = [ red, green, blue ];
@@ -90,8 +92,7 @@ function get_cmyk( red, green, blue ) {
 
 const scroll = () => {
     const header = document.querySelector("section#blend_page");
-    const search_container = document.querySelector("section#blend_section");
-    const scroll_y = header.offsetHeight + search_container.offsetHeight;
+    const scroll_y = header.offsetHeight;
     
     window.scroll({
         top: scroll_y,
@@ -168,91 +169,557 @@ const gradient_shades = ( colors, r1, g1, b1, r2, g2, b2 ) => {
         s.blue = b1;
     });
 }
+
+const hsl_to_rgb = ( h, s, l ) => {
+
+    let r, g, b;
+    h /= 360;
+
+    if ( s == 0 ) {
+        r = g = b = l;
+    } else {
+        const hue_to_rgb = ( p, q, h ) => {
+            ( h < 0 ) && ( h += 1 );
+            ( h > 1 ) && ( h -= 1 );
+            if ( h < 1/6 ) return p + ( q - p ) * 6 * h;
+            if ( h < 1/2 ) return q;
+            if ( h < 2/3 ) return p + ( q - p ) * ( ( 2 / 3 ) - h ) * 6;
+
+            return p;
+        }
+
+        let q = l < 0.5 ? l * ( 1 + s ) : l + s - l * s;
+        let p = 2 * l - q;
+
+        r = hue_to_rgb( p, q, ( h + 1/3 ) );
+        g = hue_to_rgb( p, q, h );
+        b = hue_to_rgb( p, q, ( h - 1/3 ) );
+    }
+
+    return {
+        r : Math.round( r * 255 ), 
+        g : Math.round( g * 255 ), 
+        b : Math.round( b * 255 )
+    };
+}
+
+const fixed_round = ( value, decimals ) => {
+    return Number( Math.round( value + 'e' + decimals ) + 'e-' + decimals );
+} 
+
+const tetrad = ( red, green, blue, index ) => {
+    let hsl = get_hsl( red, green, blue );
+    let h = hsl.h, s = hsl.s, l = hsl.l;
+
+    ( index == 1 ) ? h += 120.00 : h -= 60;
+    ( h < 0 ) && ( h += 360 );
+
+    let tet_rgb = hsl_to_rgb( h, s, l );
+
+    return {
+        r : tet_rgb.r,
+        g : tet_rgb.g,
+        b : tet_rgb.b
+    };
+}
+
+const get_hsl = ( red, green, blue ) => {
+
+    let r_perc = red / 255;
+    let g_perc = green / 255;
+    let b_perc = blue / 255;
+
+    let rgb_max = Math.max( Math.max( r_perc, g_perc ), b_perc );
+    let rgb_min = Math.min( Math.min( r_perc, g_perc ), b_perc );
+
+    let h, s, l;
+
+    switch( rgb_max ) {
+        case r_perc: 
+            h = ( g_perc - b_perc ) / ( rgb_max - rgb_min ) + ( g_perc < b_perc ? 6 : 0 ); 
+            break;
+        case g_perc: 
+            h = ( b_perc - r_perc ) / ( rgb_max - rgb_min ) + 2; 
+            break;
+        case b_perc: 
+            h = ( r_perc - g_perc ) / ( rgb_max - rgb_min ) + 4; 
+            break;
+    }
+
+    h /= 6;
+
+    l = ( rgb_max + rgb_min ) / 2;
+
+    ( l < 1 ) ? ( s = ( rgb_max - rgb_min ) /  ( 1 - Math.abs( ( l * 2 ) - 1 ) ) ) : ( l == 1 ) && ( s = 0 );
+
+    h *= 360;
+
+    //  Black / White
+    ( red == green && green == blue ) && ( 
+        h = 0, s = 0,
+        ( red == 0 ) && ( l = 0 ),
+        ( red == 1 ) && ( l = 1 ) 
+    );
+
+    return {
+        h : fixed_round(h, 4),
+        s : fixed_round(s, 4),
+        l : fixed_round(l, 4)
+    };
+}
     
-function create_labels(color) {
+function create_labels(active_color, color) {
     const hex_label = "HEX: ";
     const rgb_label = "RGB: ";
     const cmyk_label = "CMYK: ";
-    
-    //    Select info box for exact clicked element
-    const color_about = color.parentNode.parentNode.querySelector("div.about");
-    
+    const hsl_label = "HSL: ";
+
+    const color_about = active_color.getRootNode().querySelector("div.about");
     const info_active_color = color_about.querySelector("div.active_color");
     const info_table = color_about.querySelector("table.info");
+
+    const hsl_format = { 
+        h : fixed_round( color.hsl.h, 0 ), 
+        s : fixed_round( ( color.hsl.s * 100 ), 0 ), 
+        l : fixed_round( ( color.hsl.l * 100 ), 0 ) 
+    };
     
     info_table.querySelector("td.hex_label").innerHTML = hex_label;
     info_table.querySelector("td.rgb_label").innerHTML = rgb_label;
     info_table.querySelector("td.cmyk_label").innerHTML = cmyk_label;
+    info_table.querySelector("td.hsl_label").innerHTML = hsl_label;
     
     info_table.querySelector("td.hex_value").innerHTML = `#${color.hex}`;
-    info_table.querySelector("td.rgb_value").innerHTML = color.info_rgb;
-    info_table.querySelector("td.cmyk_value").innerHTML = color.info_cmyk;
+    info_table.querySelector("td.rgb_value").innerHTML = `${color.rgb.r}, ${color.rgb.g}, ${color.rgb.b}`;
+    info_table.querySelector("td.cmyk_value").innerHTML = `${color.cmyk.c}, ${color.cmyk.m}, ${color.cmyk.y}, ${color.cmyk.k}`;
+    info_table.querySelector("td.hsl_value").innerHTML = `${hsl_format.h}°, ${hsl_format.s}%, ${hsl_format.l}%`;
     
-    info_active_color.style.backgroundColor = color.style.backgroundColor;
+    info_active_color.style.backgroundColor = active_color.style.backgroundColor;
 }
-    
-class Palette {
-	constructor( palette, r1, g1, b1, r2, g2, b2 ) {
-		let colors = palette.children;
 
-        if ( palette.parentElement.classList.contains("color_container") ) {
-            shades_tints(colors, r1, g1, b1);
+class Color {
+    constructor( rgb ) {
+        const hex = rgb_to_hex( rgb.r, rgb.g, rgb.b )
+        const cmyk = get_cmyk( rgb.r, rgb.g, rgb.b );
+        const hsl = get_hsl( rgb.r, rgb.g, rgb.b );
+
+        return {
+            hex : hex,
+            hsl : hsl,
+            cmyk : cmyk,
+            rgb : rgb
+        };
+    }
+}
+
+const fadeIn = (el, ms, callback) => {
+    ms = ms || 400;
+    const finishFadeIn = () => {
+        el.removeEventListener('transitionend', finishFadeIn);
+        callback && callback();
+    };
+    el.style.transition = 'opacity 0s';
+    el.style.display = '';
+    el.style.opacity = 0;
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+        el.addEventListener('transitionend', finishFadeIn);
+        el.style.transition = `opacity ${ms/1000}s`;
+        el.style.opacity = 1
+        });
+    });
+};
+
+const fadeOut = (el, ms, callback) => {
+    ms = ms || 400;
+    const finishFadeOut = () => {
+        el.style.display = 'none';
+        el.removeEventListener('transitionend', finishFadeOut);
+        callback && callback();
+    };
+    el.style.transition = 'opacity 0s';
+    el.style.opacity = 1;
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+        el.style.transition = `opacity ${ms/1000}s`;
+        el.addEventListener('transitionend', finishFadeOut);
+        el.style.opacity = 0;
+        });
+    });
+};
+
+class Palette extends HTMLElement {
+	constructor( palette, color1, color2, title, class_type, container ) {
+
+        super();
+
+        const shadow = this.attachShadow( { mode: "open" } );
+
+        const title_h2 = document.createElement("h2");
+        title_h2.innerHTML = `${title}`;
+
+        const about = document.createElement("div");
+        about.setAttribute("class", "about");
+        about.innerHTML = `
+            <table class="info">
+                <tr><td class="hex_label"></td><td class="hex_value"></td></tr>
+                <tr><td class="rgb_label"></td><td class="rgb_value"></td></tr>
+                <tr><td class="cmyk_label"></td><td class="cmyk_value"></td></tr>
+                <tr><td class="hsl_label"></td><td class="hsl_value"></td></tr>
+            </table>
+        `;
+        const active_color_div = document.createElement("div");
+        active_color_div.setAttribute("class", "active_color");
+        about.insertBefore(active_color_div, about.firstChild);
+
+        const show_palette_button = document.createElement("div");
+        show_palette_button.setAttribute("class", "show_palette_button");
+        const show_palette_arrow = document.createElement("span");
+        show_palette_arrow.setAttribute( "class", "show_palette_arrow" );
+        show_palette_arrow.innerHTML = `▼`;
+        show_palette_button.appendChild( show_palette_arrow );
+        show_palette_button.appendChild( document.createTextNode( "Palette" ) );
+
+        palette.setAttribute("class", "color_palette");
+        palette.innerHTML = `
+            <div class="color"><span></span></div>
+            <div class="color"><span></span></div>
+            <div class="color"><span></span></div>
+            <div class="color"><span></span></div>
+
+            <div class="color"><span></span></div>
+
+            <div class="color"><span></span></div>
+            <div class="color"><span></span></div>
+            <div class="color"><span></span></div>
+            <div class="color"><span></span></div>
+        `;
+
+        const main_margin = "1em";
+        const main_padding = "1em";
+        const main_radius = "8px";
+
+        const blend_color_one_light = "rgb(138, 235, 171)";
+        const blend_color_two_light = "rgb(217, 181, 253)";
+
+        const colors_dom = palette.querySelectorAll("div.color");
+
+        if ( class_type == "color_palette" ) {
+            shades_tints( colors_dom, color1.rgb.r, color1.rgb.g, color1.rgb.b );
         } else {
-            gradient_shades(colors, r1, g1, b1, r2, g2, b2)
+            gradient_shades( colors_dom, color1.rgb.r, color1.rgb.g, color1.rgb.b, color2.rgb.r, color2.rgb.g, color2.rgb.b );
+
+            const first_color = `rgb(${color1.rgb.r}, ${color1.rgb.g}, ${color1.rgb.b})`;
+            const last_color = `rgb(${color2.rgb.r}, ${color2.rgb.g}, ${color2.rgb.b})`;
             
-            const gradient = palette.parentElement.querySelector("div.gradient");
-
-            const first_color = `rgb(${r1}, ${g1}, ${b1})`;
-            const last_color = `rgb(${r2}, ${g2}, ${b2})`;
-
+            const gradient = document.createElement("div");
+            gradient.setAttribute("class", "gradient"); 
             gradient.setAttribute("style",
                 `background:-webkit-linear-gradient( left, ${first_color}, ${last_color} )`,
                 `background:-moz-linear-gradient( left, ${first_color}, ${last_color} )`,
                 `background:linear-gradient( left, ${first_color}, ${last_color} )`
             );
-        }
-        
-        let active_color = colors[4];
 
-        Array.from(colors).forEach(color => {
-            color.hex = rgb_to_hex(color.red, color.green, color.blue);
-            color.info_rgb = `${color.red}, ${color.green}, ${color.blue}`;
-            color.info_cmyk = get_cmyk(color.red, color.green, color.blue);
-            color.info_cmyk = `${color.info_cmyk.c}, ${color.info_cmyk.m}, ${color.info_cmyk.y}, ${color.info_cmyk.k}`;
-            color.style.backgroundColor = `rgb(${color.red}, ${color.green}, ${color.blue})`;
-            color.classList.remove("clicked");
-            
-            color.addEventListener("click", function() {
-                active_color.classList.remove("clicked");
-                active_color = color;
-                active_color.classList.add("clicked");
-                create_labels(active_color);
+            title_h2.innerHTML = "Gradient";
+            shadow.appendChild( gradient );
+        }
+
+        let grad_middle;
+
+        const style_palette = ( active_color ) => {
+            Array.from( colors_dom ).forEach( color_el => {
+                const shade_tint_color = new Color( {r : color_el.red, g : color_el.green, b : color_el.blue} );
+
+                color_el.style.backgroundColor = `rgb( ${shade_tint_color.rgb.r}, ${shade_tint_color.rgb.g}, ${shade_tint_color.rgb.b} )`;
+                color_el.classList.remove( "clicked" );
+                
+                color_el.addEventListener( "click", function() {
+                    active_color.classList.remove( "clicked" );
+                    active_color = color_el;
+                    active_color.classList.add( "clicked" );
+                    create_labels( active_color, shade_tint_color );
+                });
+                grad_middle = new Color( { r : colors_dom[4].red, g : colors_dom[4].green, b : colors_dom[4].blue } );
             });
+        }
+
+        const style = document.createElement("style");
+        style.textContent = `
+            h2 {
+                width:auto;
+                color:@blend_color_two_light;
+                
+                display:flex;
+                align-items:center;
+                justify-content:center;
+            }
+
+            h2:before {
+                background:-webkit-linear-gradient(left, ${blend_color_one_light}, ${blend_color_two_light});
+                background:-moz-linear-gradient(left, ${blend_color_one_light}, ${blend_color_two_light});
+                background:linear-gradient(to right, ${blend_color_one_light}, ${blend_color_two_light});
+                margin-right:${main_margin};
+            }
+            h2:after {
+                background:-webkit-linear-gradient(right, ${blend_color_one_light}, ${blend_color_two_light});
+                background:-moz-linear-gradient(right, ${blend_color_one_light}, ${blend_color_two_light});
+                background:linear-gradient(to left, ${blend_color_one_light}, ${blend_color_two_light});
+                
+                margin-left:${main_margin};
+            }
+
+            h2:before,
+            h2:after {
+                content:"";
+                height:2px;
+                flex-grow:1;
+            }
+
+            div.color_palette, div.gradient_palette {
+                height:0px;
+                overflow:hidden;
+
+                display:-webkit-box;
+                display:-webkit-flex;
+                display:-ms-flexbox;
+                display:flex;
+
+                margin:calc(${main_margin} / 2) 0;
+
+                -webkit-transition:height 0.5s, opacity 0.5s;
+                -moz-transition:height 0.5s, opacity 0.5s;
+                -ms-transition:height 0.5s, opacity 0.5s;
+                -o-transition:height 0.5s, opacity 0.5s;
+                transition:height 0.5s, opacity 0.5s;
+            }
+            div.color {
+                cursor:pointer;
+                width:50px;
+                height:70px;
+                border-radius:${main_radius};
+                margin:calc(${main_margin}/8);
+                flex-grow:1;
+                box-shadow:1px 1px 0 rgba(255, 255, 255, 0.2) inset, -1px -1px black inset, 1px 1px black;
+                -webkit-transition:width 0.5s, background-color 0.5s;
+                -moz-transition:width 0.5s, background-color 0.5s;
+                -ms-transition:width 0.5s, background-color 0.5s;
+                -o-transition:width 0.5s, background-color 0.5s;
+                transition:width 0.5s, background-color 0.5s;
+            }
+
+            div.about {
+                display:flex;
+                align-items:center;
+                justify-content:space-between;
+            }
+            div.active_color {
+                width:28%;
+                height:120px;
+                border:1px solid rgba(255, 255, 255, 0.3);
+                border-radius:${main_radius};
+                
+                display:flex;
+                align-items:end;
+                justify-content:center;
+                margin-right:${main_margin};
+                
+                -webkit-transition:background-color 0.5s;
+                -moz-transition:background-color 0.5s;
+                -ms-transition:background-color 0.5s;
+                -o-transition:background-color 0.5s;
+                transition:background-color 0.5s;
+            }
+            table.info {
+                width:70%;
+                color:lightgray;
+                background-color:rgba(0, 0, 0, 0.2);
+                border:1px solid rgba(255, 255, 255, 0.3);
+                border-radius:${main_radius};
+
+                text-transform:uppercase;
+                border-spacing:calc(${main_margin} / 2);
+            }
+
+            table.info td {
+                text-align:left;
+                font-weight:bold;
+            }
+                
+            table.info td.hex_label,
+            table.info td.rgb_label,
+            table.info td.cmyk_label {
+                width:30%;  
+            }
+
+            div.show_palette_button {
+                cursor:pointer;
+                width:100%;
+                color:#333;
+                background-color:rgba(255, 255, 255, 0.6);
+                border:1px solid rgba(255, 255, 255, 0.8);
+                border-radius:0 0 ${main_radius} ${main_radius};
+
+                display:flex;
+                align-items:center;
+                justify-content:space-around;
+
+                padding:calc( ${main_padding}/2 );
+                font-weight:bold;
+                text-align:center;
+            }
+
+            span.show_palette_arrow {
+                display:inline-block;
+                transform:rotate(-180deg);
+
+                -webkit-transition:all 0.5s;
+                -moz-transition:all 0.5s;
+                -ms-transition:all 0.5s;
+                -o-transition:all 0.5s;
+                transition:all 0.5s;
+            }
+
+            div.gradient {
+                width:100%;
+                height:100px;
+                border:1px solid #666;
+                border-radius:${main_radius};
+                margin-bottom:${main_margin};
+
+                -webkit-transition:all 0.5s;
+                -moz-transition:all 0.5s;
+                -ms-transition:all 0.5s;
+                -o-transition:all 0.5s;
+                transition:all 0.5s;
+            }
+
+            .clicked {
+                width:140px !important;
+            }
+        `;
+
+        show_palette_button.addEventListener("click", function() {
+            if (!palette.style.height || palette.style.height == '0px') { 
+                palette.style.height = "74px";
+                show_palette_arrow.style.transform = "rotate(0deg)";
+            } else {
+                palette.style.height = '0px';
+                show_palette_arrow.style.transform = "rotate(-180deg)";
+            }
         });
-        
-        create_labels(active_color);
-        active_color.classList.add("clicked");
+
+        let active_color = colors_dom[4];
+        style_palette(active_color);
+        shadow.appendChild( style );
+
+        if ( title !== null ) {
+            shadow.appendChild( title_h2 );
+        }
+        shadow.appendChild( about );
+
+        if ( title == "Color" || title == "Gradient" ) {
+            palette.style.height = "70px";
+            palette.style.marginTop = main_margin;
+            palette.style.marginBottom = main_margin;
+        } else {
+            active_color_div.appendChild( show_palette_button );
+        }
+
+        shadow.appendChild( palette );        
+
+        create_labels( active_color, grad_middle );
+        active_color.classList.add( "clicked" ); 
 	};
 }
-    
-function color_palette(red, green, blue) {
-    const main = document.getElementById("main_color_palette");
-    const triad_one = document.getElementById("triadic_palette_one");
-    const triad_two = document.getElementById("triadic_palette_two");
-    const complement_palette = document.getElementById("complement_palette");
-    
-    const triad_one_value = triadic_one(red, green, blue);
-    const triad_two_value = triadic_two(red, green, blue);
-    const comp = complement(red, green, blue);
-    
-    new Palette(main, red, green, blue);
-    new Palette(triad_one, triad_one_value.r, triad_one_value.g, triad_one_value.b);
-    new Palette(triad_two, triad_two_value.r, triad_two_value.g, triad_two_value.b);
-    new Palette(complement_palette, comp.r, comp.g, comp.b);
+
+function color_palette( red1, green1, blue1, red2, green2, blue2, class_type ) {
+
+    let palettes_dom;
+
+    palettes_dom = [
+        {   title: "Color",
+            color1: new Color( { r : red1, g : green1, b : blue1 } ),
+            color2: new Color( { r : red2, g : green2, b : blue2 } ),
+        }
+    ];
+
+    if ( class_type == "color_palette" ) {
+        palettes_dom.push(
+            {   title: "Complement",
+                color1: new Color( complement( red1, green1, blue1 ) ),
+                color2: null
+            }, 
+            {   title: "Triadic",
+                color1: new Color( triadic_one( red1, green1, blue1 ) ),
+                color2: null
+            }, 
+            {   title: null,
+                color1: new Color( triadic_two( red1, green1, blue1 ) ),
+                color2: null
+            }, 
+            {   title: "Tetradic",
+                color1: new Color( tetrad( red1, green1, blue1, 1 ) ),
+                color2: null
+            }, 
+            {   title: null,
+                color1: new Color( tetrad( red1, green1, blue1, 2 ) ),
+                color2: null
+            }
+        );
+    }
+
+    const do_colors = ( class_type ) => {
+        let container;
+
+        palettes_dom.forEach( p => {
+            if ( p.title !== null ) {
+                container = document.createElement("div");
+                container.setAttribute("class", "container");
+
+                document.querySelector( "section#colors_section" ).appendChild( container );
+
+                container.appendChild(
+                    new Palette( document.createElement("div"), p.color1, p.color2, p.title, class_type, container ) 
+                );
+
+                if ( class_type == "gradient_palette" ) {
+                    class_type = "color_palette";
+                    container.appendChild(
+                        new Palette( document.createElement("div"), p.color1, null, null, class_type, container ) 
+                    );
+                    container.appendChild(
+                        new Palette( document.createElement("div"), p.color2, null, null, class_type, container ) 
+                    );
+                }
+
+            } else {
+                container.appendChild(
+                    new Palette( document.createElement("div"), p.color1, p.color2, p.title, class_type, container ) 
+                );
+                container.appendChild(
+                    new Palette( document.createElement("div"), palettes_dom[0].color1, p.color2, p.title, class_type, container ) 
+                );
+            }
+        });
+    }
+
+    if ( !customElements.get( "new-palette" ) ) {   
+        customElements.define( "new-palette", Palette );
+        do_colors( class_type );
+    } else {
+        document.querySelector( "section#colors_section" ).style.opacity = 0;
+        
+        setTimeout( function() { 
+            document.querySelector( "section#colors_section" ).innerHTML = '';
+            do_colors( class_type );
+            document.querySelector( "section#colors_section" ).style.opacity = 1;
+        }, 100 ); 
+    }
 }
 
 const show_hide_sections = ( containers_show, containers_hide ) => {
     document.querySelector("section#colors_section").classList.remove("section-hidden");
+
     containers_show.forEach(container => {
         container.classList.remove("section-hidden");
     });
@@ -272,7 +739,7 @@ const input_to_colors = ( input, color_type ) => {
     else {
         input = input.match( /\d+/g ).map( Number );
         Object.keys( rgb ).forEach( function ( key, index ) {
-            rgb[key] = input[index];
+            rgb[ key ] = input[ index ];
         });
     }
 
@@ -280,9 +747,8 @@ const input_to_colors = ( input, color_type ) => {
 }
     
 function begin( input_type, button ) {
-    const color_containers = document.querySelectorAll(".color_container");
-    const gradient_palette = document.getElementById("gradient_palette");
-    const gradient_container = document.querySelectorAll(".gradient_container");
+    const color_containers = document.querySelectorAll(".palette_container");
+    const gradient_palette = document.querySelectorAll(".gradient_palette");
     const inputs = document.getElementById(input_type).querySelectorAll(".color_input");
 
     const hex_re = /^#?([0-9A-F]{3}){1,2}$/i;
@@ -293,6 +759,7 @@ function begin( input_type, button ) {
     let colors = {};
     let blend;
     let invalid_code = "";
+    let class_type;
 
     error_message( "hide" );
 
@@ -330,13 +797,14 @@ function begin( input_type, button ) {
 
     if ( invalid_code == "" ) {
         if ( blend ) {
-            new Palette( gradient_palette, colors[0].r, colors[0].g, colors[0].b, 
-            colors[1].r, colors[1].g, colors[1].b );
-            show_hide_sections( gradient_container, color_containers );
+            class_type = "gradient_palette";
+            color_palette( colors[0].r, colors[0].g, colors[0].b, colors[1].r, colors[1].g, colors[1].b, class_type );
+            show_hide_sections( gradient_palette, color_containers );
             scroll();
         } else {
-            color_palette( colors[0].r, colors[0].g, colors[0].b );
-            show_hide_sections( color_containers, gradient_container );
+            class_type = "color_palette";
+            color_palette( colors[0].r, colors[0].g, colors[0].b, null, null, null, class_type );
+            show_hide_sections( color_containers, gradient_palette );
             scroll();
         }
     } else {
@@ -393,7 +861,7 @@ const error_message = ( code ) => {
     
 function init() {
     const input_fields = document.querySelectorAll("input.color_input");
-    const color_palettes = document.querySelectorAll("div.palette_container");
+    const color_palettes = document.querySelectorAll("div.color_palette");
     const buttons = [
         document.getElementById("search_button"),
         document.getElementById("blend_button"),

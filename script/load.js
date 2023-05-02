@@ -23,9 +23,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
             el.style.opacity = 1
             });
         });
-        };
+    };
 
-        const fadeOut = (el, ms, callback) => {
+    const fadeOut = (el, ms, callback) => {
         ms = ms || 400;
         const finishFadeOut = () => {
             el.style.display = 'none';
@@ -61,6 +61,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
     });
 
     let date = new Date();
-    footer.innerHTML = `© ${date.getFullYear()} Jessica / Blend.js`;
+    footer.innerHTML = `© ${ date.getFullYear() } Jessica / Blend.js`;
 
 });

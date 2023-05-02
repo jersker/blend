@@ -675,134 +675,16 @@ div#container {
 section#colors_section {
     width:100%;
     border-top:1px solid gray;
-    padding:0 @main_padding @main_padding @main_padding;
-    
-    div.palette_container {
-        margin:@main_margin auto;
-        
-        -webkit-transition:all 0.5s;
-        -moz-transition:all 0.5s;
-        -ms-transition:all 0.5s;
-        -o-transition:all 0.5s;
-        transition:all 0.5s;
-        
-        h2 {
-            width:auto;
-            color:@blend_color_two_light;
-            
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            
-            margin:calc(@main_margin * 2) 0;
-            
-            &:after,
-            &:before {
-                content:"";
-                height:2px;
-                flex-grow:1;
-            }
-            
-            &:before {
-                background:-webkit-linear-gradient(left, @blend_color_one_light, @blend_color_two_light);
-                background:-moz-linear-gradient(left, @blend_color_one_light, @blend_color_two_light);
-                background:linear-gradient(to right, @blend_color_one_light, @blend_color_two_light);
-                margin-right:@main_margin;
-            }
-            &:after {
-                background:-webkit-linear-gradient(right, @blend_color_one_light, @blend_color_two_light);
-                background:-moz-linear-gradient(right, @blend_color_one_light, @blend_color_two_light);
-                background:linear-gradient(to left, @blend_color_one_light, @blend_color_two_light);
-                
-                margin-left:@main_margin;
-            }
-        }
-        
-        div.gradient {
-            width:100%;
-            height:100px;
-            border:1px solid white;
-            border-radius:@main_radius;
-            margin-bottom:@main_margin;
+    padding:@main_padding;
 
-            -webkit-transition:all 0.5s;
-            -moz-transition:all 0.5s;
-            -ms-transition:all 0.5s;
-            -o-transition:all 0.5s;
-            transition:all 0.5s;
-        }
+    -webkit-transition:all 0.5s;
+    -moz-transition:all 0.5s;
+    -ms-transition:all 0.5s;
+    -o-transition:all 0.5s;
+    transition:all 0.5s;
+
+    div.container {
         
-        div.about {
-            width:100%;
-            
-            display:flex;
-            justify-content:space-between;
-            
-            margin-bottom:@main_margin;
-            
-            div.active_color {
-                width:30%;
-                border:1px solid rgba(255, 255, 255, 0.3);
-                border-radius:@main_radius;
-                
-                margin-right:@main_margin;
-                
-                -webkit-transition:background-color 0.5s;
-                -moz-transition:background-color 0.5s;
-                -ms-transition:background-color 0.5s;
-                -o-transition:background-color 0.5s;
-                transition:background-color 0.5s;
-            }
-            
-            table.info {
-                width:70%;
-                color:lightgray;
-                background-color:rgba(0, 0, 0, 0.2);
-                border:1px solid rgba(255, 255, 255, 0.3);
-                border-radius:@main_radius;
-                
-                text-transform:uppercase;
-                border-spacing:calc(@main_margin / 2);
-                
-                td.hex_label,
-                td.rgb_label,
-                td.cmyk_label {
-                    text-align:left;
-                    font-weight:bold;
-                }
-            }
-        }
-        
-        div.palette {
-            width:100%;
-            height:auto;
-            opacity:1;
-            display:-webkit-box;
-            display:-webkit-flex;
-            display:-ms-flexbox;
-            display:flex;
-            
-            -webkit-transition:height 0.5s, opacity 0.5s;
-            -moz-transition:height 0.5s, opacity 0.5s;
-            -ms-transition:height 0.5s, opacity 0.5s;
-            -o-transition:height 0.5s, opacity 0.5s;
-            transition:height 0.5s, opacity 0.5s;
-            
-            .color {
-                cursor:pointer;
-                width:50px;
-                height:70px;
-                border-radius:@main_radius;
-                margin:calc(@main_margin/8);
-                flex-grow:1;
-                box-shadow:1px 1px 0 rgba(255, 255, 255, 0.2) inset, -1px -1px black inset, 1px 1px black;
-                -webkit-transition:width 0.5s, background-color 0.5s;
-                -moz-transition:width 0.5s, background-color 0.5s;
-                -ms-transition:width 0.5s, background-color 0.5s;
-                -o-transition:width 0.5s, background-color 0.5s;
-                transition:width 0.5s, background-color 0.5s;
-            }
-        }
     }
 }
 
