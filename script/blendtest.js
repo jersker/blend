@@ -573,98 +573,40 @@ function color_palette( red1, green1, blue1, red2, green2, blue2 ) {
     const colors_section = document.querySelector( "section#colors_section" );
     const color1 = new Color( { r : red1, g : green1, b : blue1 } );
     const color2 = new Color( { r : red2, g : green2, b : blue2 } );
-    const comp1 = new Color( complement( red1, green1, blue1 ) );
-    
-    let palettes_dom;
-    let reset;
+    const comp1 = new Color( complement( red1, green1, blue1 ) );  
+    const comp2 = new Color( complement( red2, green2, blue2 ) );
+    const triad1 = new Color( triadic_one( red1, green1, blue1 ) );
+    const triad2 = new Color( triadic_two( red1, green1, blue1 ) );
+    const tetrad1 = new Color( tetrad( red1, green1, blue1, 1 ) );
+    const tetrad2 = new Color( tetrad( red1, green1, blue1, 2 ) );
 
     const cp = "color_palette";
     const gp = "gradient_palette";
 
-    let class_type;
+    const palette_type = red2 == null && cp || gp;
 
-    if ( red2 == null ) {
-        class_type = cp;
-    } else {
-        class_type = gp;
-    }
+    const palettes_dom = [
+        { color1 : color1, color2 : null, type: cp, section : cp, title : "Color" },
+        { color1 : comp1, color2 : null, type: cp, section : cp, title : "Complement" },
+        { color1 : triad1, color2 : null, type: cp, section : cp, title : "Triadic" },
+        { color1 : triad2, color2 : null, type: cp, section : cp, title : null },
+        { color1 : tetrad1, color2 : null, type: cp, section : cp, title : "Tetradic" },
+        { color1 : tetrad2, color2 : null, type: cp, section : cp, title : null },
+        { color1 : color1, color2 : color2, type: gp, section : gp, title : "Gradient" },
+        { color1 : color1, color2 : null, type: cp, section : gp, title : null },
+        { color1 : color2, color2 : null, type: cp, section : gp, title : null },
+        { color1 : comp1, color2 : comp2, type: gp, section : gp, title : "Complement" },
+        { color1 : comp1, color2 : null, type: cp, section : gp, title : null },
+        { color1 : comp2, color2 : null, type: cp, section : gp, title : null }
+    ].filter(( p ) => p.section === palette_type);
+    
+    let reset = (document.querySelector("div.container") !== null);
 
-    const button_clicked = class_type;
-
-    if ( class_type == "color_palette" ) {
-
-        palettes_dom = [
-            {   title : "Color", 
-                color1 : color1,
-                color2 : null,
-                type : cp 
-            }, 
-            {   title : "Complement", 
-                color1 : comp1,
-                type : cp 
-            }, 
-            {   title : "Triadic", 
-                color1 : new Color( triadic_one( red1, green1, blue1 ) ),
-                color2 : null,
-                type : cp 
-            }, 
-            {   title: null,
-                color1 : new Color( triadic_two( red1, green1, blue1 ) ),
-                color2 : null,
-                type : cp 
-            }, 
-            {   title : "Tetradic", 
-                color1 : new Color( tetrad( red1, green1, blue1, 1 ) ),
-                color2 : null,
-                type : cp  
-            }, 
-            {   title : null,
-                color1: new Color( tetrad( red1, green1, blue1, 2 ) ),
-                color2 : null,
-                type : cp 
-            }
-        ];
-
-    } else {
-        const comp1 = new Color( complement( red1, green1, blue1 ) );
-        const comp2 = new Color( complement( red2, green2, blue2 ) );
-        palettes_dom = [
-            {   title : "Gradient", 
-                color1 : color1, 
-                color2 : color2,
-                type : gp
-            },
-            {   color1 : color1,
-                type : cp 
-            },
-            {   color1 : color2,
-                type : cp  
-            },
-            {   title : "Complement", 
-                color1 : comp1, 
-                color2 : comp2,
-                type : gp
-            },
-            {   color1 : comp1,
-                type : cp  
-            },
-            {   color1 : comp2,
-                type : cp 
-            }
-        ];
+    if ( reset && palette_type !== document.querySelector( ".palette" ).classList[ 0 ] ) {
+        reset = false;
+        colors_section.innerHTML = "";
     }
     
-    if ( document.querySelector("div.container") == null ) {
-        reset = false;
-    } else {
-        reset = true;
-        
-        if ( button_clicked !== document.querySelector(".palette").classList[0] ) {
-            reset = false;
-            colors_section.innerHTML = "";
-        }
-    }
-
     palettes_dom.forEach( (p, index) => {
         new Palette( p, index, p.color1, p.color2, p.type, reset );
     });
