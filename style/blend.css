@@ -184,7 +184,7 @@ div#helper_card {
   left: 50%;
   color: lightgray;
   background-color: rgba(30, 30, 30, 0.7);
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 8px;
   box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.1);
@@ -294,6 +294,11 @@ div#helper_card div#card_message ul.examples_table li table td.hex_example {
 div#container {
   display: flex;
   flex-direction: column;
+  -webkit-transition: all 0.5s;
+  -moz-transition: all 0.5s;
+  -ms-transition: all 0.5s;
+  -o-transition: all 0.5s;
+  transition: all 0.5s;
 }
 div#container div#help {
   color: gray;
@@ -302,6 +307,11 @@ div#container div#help {
   align-items: center;
   gap: 1em;
   margin-bottom: 1em;
+  -webkit-transition: all 0.5s;
+  -moz-transition: all 0.5s;
+  -ms-transition: all 0.5s;
+  -o-transition: all 0.5s;
+  transition: all 0.5s;
 }
 div#container div#help svg#help_icon {
   color: #8aebab;
@@ -740,8 +750,10 @@ footer div#copyright {
   section#blend_page div#container {
     width: 50%;
   }
-  section#colors_section div.palette_container {
-    width: 60%;
+  section#colors_section div.container {
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
   }
 }
 /* TABLET */
@@ -759,8 +771,10 @@ footer div#copyright {
   section#blend_page div#container {
     width: 60%;
   }
-  section#colors_section div.palette_container {
-    width: 80%;
+  section#colors_section div.container {
+    width: 70%;
+    margin-left: auto;
+    margin-right: auto;
   }
 }
 /* MOBILE */
@@ -778,7 +792,7 @@ footer div#copyright {
   section#blend_page div#container {
     width: 100%;
   }
-  section#colors_section div.palette_container {
+  section#colors_section div.container {
     width: 100%;
   }
 }

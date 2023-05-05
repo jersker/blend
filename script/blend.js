@@ -8,14 +8,15 @@ document.addEventListener("DOMContentLoaded", function() {
 
 // // // // // // // // // //
 
-const triadic_one = ( red, green, blue ) => ( { r : green, g : blue, b : red } );
-const triadic_two = ( red, green, blue ) => ( { r : blue, g : red, b : green } );
+const triadic_one = ( color ) => ( { r : color.g, g : color.b, b : color.r } );
+const triadic_two = ( color ) => ( { r : color.b, g : color.r, b : color.g } );
 
-const complement = ( red, green, blue ) => {
+const complement = ( color ) => {
+
 	return {
-        r : Math.max( red, blue, green ) + Math.min( red, blue, green ) - red,
-        g : Math.max( red, blue, green ) + Math.min( red, blue, green ) - green,
-        b : Math.max( red, blue, green ) + Math.min( red, blue, green ) - blue
+        r : Math.max( color.r, color.g, color.b ) + Math.min( color.r, color.g, color.b ) - color.r,
+        g : Math.max( color.r, color.g, color.b ) + Math.min( color.r, color.g, color.b ) - color.g,
+        b : Math.max( color.r, color.g, color.b ) + Math.min( color.r, color.g, color.b ) - color.b
     };
 }
 
@@ -69,7 +70,7 @@ function shades_tints( colors, red, green, blue ) {
     colors[ shade_max ].green = green;
     colors[ shade_max ].blue = blue;
 }
-    
+
 const gradient_shades = ( colors, r1, g1, b1, r2, g2, b2 ) => {
     const max = ( colors.length - 1 );
     const shades = Array.from( colors ).slice( 1, max );
@@ -136,66 +137,57 @@ const fixed_round = ( value, decimals ) => {
     return Number( Math.round( value + 'e' + decimals ) + 'e-' + decimals );
 } 
 
-const tetrad = ( red, green, blue, index ) => {
-    let hsl = get_hsl( red, green, blue );
-    let h = hsl.h, s = hsl.s, l = hsl.l;
+const tetrad = ( color, index ) => {
+    const { h, s, l } = get_hsl( color.r, color.g, color.b );
+    const hueShift = ( index === 1 ) ? +120 : -60;
+    const newHue = ( h + hueShift + 360 ) % 360;
+    const { r, g, b } = hsl_to_rgb( newHue, s, l );
 
-    ( index == 1 ) ? h += 120.00 : h -= 60;
-    ( h < 0 ) && ( h += 360 );
-
-    let tet_rgb = hsl_to_rgb( h, s, l );
-
-    return {
-        r : tet_rgb.r,
-        g : tet_rgb.g,
-        b : tet_rgb.b
-    };
-}
+    return { r, g, b };
+};
 
 const get_hsl = ( red, green, blue ) => {
 
-    let r_perc = red / 255;
-    let g_perc = green / 255;
-    let b_perc = blue / 255;
+    const r_perc = red / 255;
+    const g_perc = green / 255;
+    const b_perc = blue / 255;
 
-    let rgb_max = Math.max( Math.max( r_perc, g_perc ), b_perc );
-    let rgb_min = Math.min( Math.min( r_perc, g_perc ), b_perc );
-
+    const rgb_max = Math.max( r_perc, g_perc, b_perc );
+    const rgb_min = Math.min( r_perc, g_perc, b_perc );
+    
     let h, s, l;
 
-    switch( rgb_max ) {
-        case r_perc: 
-            h = ( g_perc - b_perc ) / ( rgb_max - rgb_min ) + ( g_perc < b_perc ? 6 : 0 ); 
+    if ( rgb_max === rgb_min ) {
+        h = 0;
+        s = 0;
+        l = rgb_max;
+    } else {
+        const d = rgb_max - rgb_min;
+
+        switch ( rgb_max ) {
+        case r_perc:
+            h = ( ( g_perc - b_perc ) / d + ( g_perc < b_perc ? 6 : 0 ) ) / 6;
             break;
-        case g_perc: 
-            h = ( b_perc - r_perc ) / ( rgb_max - rgb_min ) + 2; 
+        case g_perc:
+            h = ( ( b_perc - r_perc ) / d + 2 ) / 6;
             break;
-        case b_perc: 
-            h = ( r_perc - g_perc ) / ( rgb_max - rgb_min ) + 4; 
+        case b_perc:
+            h = ( ( r_perc - g_perc ) / d + 4 ) / 6;
             break;
+        }
+
+        l = ( rgb_max + rgb_min ) / 2;
+        s = d / ( 1 - Math.abs( 2 * l - 1 ) );
     }
-
-    h /= 6;
-
-    l = ( rgb_max + rgb_min ) / 2;
-
-    ( l < 1 ) ? ( s = ( rgb_max - rgb_min ) /  ( 1 - Math.abs( ( l * 2 ) - 1 ) ) ) : ( l == 1 ) && ( s = 0 );
 
     h *= 360;
 
-    //  Black / White
-    ( red == green && green == blue ) && ( 
-        h = 0, s = 0,
-        ( red == 0 ) && ( l = 0 ),
-        ( red == 1 ) && ( l = 1 ) 
-    );
-
     return {
-        h : fixed_round(h, 4),
-        s : fixed_round(s, 4),
-        l : fixed_round(l, 4)
+        h: fixed_round( h, 4 ),
+        s: fixed_round( s, 4 ),
+        l: fixed_round( l, 4 )
     };
-}
+};
     
 function create_labels(active_color, color) {
     const hex_label = "HEX: ";
@@ -227,217 +219,6 @@ function create_labels(active_color, color) {
     info_active_color.style.backgroundColor = active_color.style.backgroundColor;
 }
 
-class Color {
-    constructor( rgb ) {
-
-        const rgb_to_hex = ( red, green, blue ) => {
-            red = parseInt( red ).toString( 16 );
-            green = parseInt( green ).toString( 16 );
-            blue = parseInt( blue ).toString( 16 );
-            
-            red.length == 1 && ( red = "0" + red ); 
-            green.length == 1 && ( green = "0" + green ); 
-            blue.length == 1 && ( blue = "0" + blue ); 
-
-            return red + green + blue;
-        }
-
-        const get_cmyk = ( red, green, blue ) => {
-            let cyan = 0, magenta = 0, yellow = 0;
-            let cmy = { cyan, magenta, yellow };
-            let rgb = [ red, green, blue ];
-            let black = 100;
-            let minimum = 0;
-            
-            if ( ! (red == 0 && green == 0 & blue == 0 ) ) {
-                Object.keys(cmy).forEach(function (color_type, index) {
-                    ( rgb[ index ] == 0 ) ? cmy[ color_type ] = 100 : cmy[ color_type ] = ( 1 - ( rgb[ index ] / 255 ) );
-                });
-                
-                minimum = Math.min(cmy.cyan, cmy.magenta, cmy.yellow);
-                
-                Object.keys(cmy).forEach(function (color_type, index) {
-                    ( rgb[ index ] == 0 ) ? cmy[ color_type ] = 100 : cmy[ color_type ] = Math.round( ( cmy[ color_type ] - minimum ) / ( 1 - minimum ) * 100 );
-                });
-
-                black = Math.round(minimum * 100);
-            }
-
-            return {
-                c : cmy.cyan,
-                m : cmy.magenta,
-                y : cmy.yellow,
-                k : black
-            };
-        }
-
-        const hsl = get_hsl( rgb.r, rgb.g, rgb.b );
-
-        return {
-            hex : rgb_to_hex( rgb.r, rgb.g, rgb.b ),
-            hsl : hsl,
-            cmyk : get_cmyk(rgb.r, rgb.g, rgb.b),
-            rgb : rgb
-        };
-    }
-}
-
-const fadeIn = (el, ms, callback) => {
-    ms = ms || 400;
-    const finishFadeIn = () => {
-        el.removeEventListener('transitionend', finishFadeIn);
-        callback && callback();
-    };
-    el.style.transition = 'opacity 0s';
-    el.style.display = '';
-    el.style.opacity = 0;
-    requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-        el.addEventListener('transitionend', finishFadeIn);
-        el.style.transition = `opacity ${ms/1000}s`;
-        el.style.opacity = 1
-        });
-    });
-};
-
-const fadeOut = (el, ms, callback) => {
-    ms = ms || 400;
-    const finishFadeOut = () => {
-        el.style.display = 'none';
-        el.removeEventListener('transitionend', finishFadeOut);
-        callback && callback();
-    };
-    el.style.transition = 'opacity 0s';
-    el.style.opacity = 1;
-    requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-        el.style.transition = `opacity ${ms/1000}s`;
-        el.addEventListener('transitionend', finishFadeOut);
-        el.style.opacity = 0;
-        });
-    });
-};
-/*
-
-class Palette {
-	constructor( palette, color1, color2, title, class_type ) {
-
-        let container;
-
-        function reset() {
-            console.log(document.querySelectorAll("div.container"));
-        }
-
-            container = document.createElement("div");
-            container.setAttribute("class", "container");
-
-            const title_h2 = document.createElement("h2");
-            title_h2.innerHTML = `${title}`;
-
-            const about = document.createElement("div");
-            about.setAttribute("class", "about");
-            about.innerHTML = `
-                <table class="info">
-                    <tr><td class="hex_label"></td><td class="hex_value"></td></tr>
-                    <tr><td class="rgb_label"></td><td class="rgb_value"></td></tr>
-                    <tr><td class="cmyk_label"></td><td class="cmyk_value"></td></tr>
-                    <tr><td class="hsl_label"></td><td class="hsl_value"></td></tr>
-                </table>
-            `;
-            const active_color_div = document.createElement("div");
-            active_color_div.setAttribute("class", "active_color");
-            about.insertBefore(active_color_div, about.firstChild);
-
-            const show_palette_button = document.createElement("div");
-            show_palette_button.setAttribute("class", "show_palette_button");
-            const show_palette_arrow = document.createElement("span");
-            show_palette_arrow.setAttribute( "class", "show_palette_arrow" );
-            show_palette_arrow.innerHTML = `▼`;
-            show_palette_button.appendChild( show_palette_arrow );
-            show_palette_button.appendChild( document.createTextNode( "Palette" ) );
-
-            palette.setAttribute("class", "color_palette");
-            palette.innerHTML = `
-                <div class="color"></div>
-                <div class="color"></div>
-                <div class="color"></div>
-                <div class="color"></div>
-
-                <div class="color"></div>
-
-                <div class="color"></div>
-                <div class="color"></div>
-                <div class="color"></div>
-                <div class="color"></div>
-            `;
-
-            const colors_dom = palette.querySelectorAll("div.color");
-
-            let gradient;
-            if ( class_type == "color_palette" ) {
-                shades_tints( colors_dom, color1.rgb.r, color1.rgb.g, color1.rgb.b );
-            } else {
-                gradient_shades( colors_dom, color1.rgb.r, color1.rgb.g, color1.rgb.b, color2.rgb.r, color2.rgb.g, color2.rgb.b );
-
-                const first_color = `rgb(${color1.rgb.r}, ${color1.rgb.g}, ${color1.rgb.b})`;
-                const last_color = `rgb(${color2.rgb.r}, ${color2.rgb.g}, ${color2.rgb.b})`;
-                
-                gradient = document.createElement("div");
-                gradient.setAttribute("class", "gradient"); 
-                gradient.setAttribute("style",
-                    `background:-webkit-linear-gradient( left, ${first_color}, ${last_color} )`,
-                    `background:-moz-linear-gradient( left, ${first_color}, ${last_color} )`,
-                    `background:linear-gradient( left, ${first_color}, ${last_color} )`
-                );
-            }
-
-            show_palette_button.addEventListener("click", function() {
-                if (!palette.style.height || palette.style.height == '0px') { 
-                    palette.style.height = "calc(74px + 1rem)";
-                    palette.style.paddingTop = "1rem";
-                    show_palette_arrow.style.transform = "rotate(0deg)";
-                } else {
-                    palette.style.height = "0px";
-                    palette.style.paddingTop = "0";
-                    show_palette_arrow.style.transform = "rotate(-180deg)";
-                }
-            });
-
-            let active_color = colors_dom[4];
-            
-            Array.from( colors_dom ).forEach( color_el => {
-                const shade_tint_color = new Color( {r : color_el.red, g : color_el.green, b : color_el.blue} );
-
-                color_el.style.backgroundColor = `rgb( ${shade_tint_color.rgb.r}, ${shade_tint_color.rgb.g}, ${shade_tint_color.rgb.b} )`;
-                color_el.classList.remove( "clicked" );
-                
-                color_el.addEventListener( "click", function() {
-                    active_color.classList.remove( "clicked" );
-                    active_color = color_el;
-                    active_color.classList.add( "clicked" );
-                    create_labels( active_color, shade_tint_color );
-                });
-            });
-
-            const grad_middle = new Color( { r : colors_dom[4].red, g : colors_dom[4].green, b : colors_dom[4].blue } );
-
-            ( title !== null && title !== undefined ) && ( container.appendChild( title_h2 ) );
-            ( title == "Color" || class_type == "gradient_palette" ) ? (palette.style.height = "calc(74px + 1rem)", palette.style.paddingTop = "1rem") : active_color_div.appendChild( show_palette_button );
-            ( class_type == "gradient_palette" ) && ( container.appendChild( gradient ) );
-
-            container.appendChild( about );
-            container.appendChild( palette );    
-
-            create_labels( active_color, grad_middle );
-            active_color.classList.add( "clicked" ); 
-
-        return container;
-	};
-}
-
-*/
-
-
 class Palette {
     constructor( p, index, color1, color2, class_type, reset ) {
 
@@ -464,50 +245,42 @@ class Palette {
                 </table>
             `;
 
-            active_color_div = document.createElement("div");
-            active_color_div.setAttribute("class", "active_color");
-            about.insertBefore(active_color_div, about.firstChild);
+            active_color_div = document.createElement( "div" );
+            active_color_div.setAttribute( "class", "active_color" );
+            about.insertBefore( active_color_div, about.firstChild );
 
-            const show_palette_button = document.createElement("div");
-            show_palette_button.setAttribute("class", "show_palette_button");
-            const show_palette_arrow = document.createElement("span");
-            show_palette_arrow.setAttribute( "class", "show_palette_arrow" );
-            show_palette_arrow.innerHTML = `▼`;
-            show_palette_button.appendChild( show_palette_arrow );
-            show_palette_button.appendChild( document.createTextNode( "Palette" ) );
+            const show_palette_button = document.createElement( "div" );
+            show_palette_button.classList.add( "show_palette_button" );
+
+            const show_palette_arrow = document.createElement( "span" );
+            show_palette_arrow.classList.add( "show_palette_arrow" );
+            show_palette_arrow.textContent = "▼";
+
+            show_palette_button.append( show_palette_arrow, "Palette" );
 
             palette = document.createElement("div");
             palette.classList.add(class_type);
             palette.classList.add("palette");
             
-            palette.innerHTML = `
-                <div class="color"></div>
-                <div class="color"></div>
-                <div class="color"></div>
-                <div class="color"></div>
+            palette.innerHTML = Array.from( { length: 9 } ).map( () => '<div class="color"></div>' ).join( '' );
 
-                <div class="color"></div>
-
-                <div class="color"></div>
-                <div class="color"></div>
-                <div class="color"></div>
-                <div class="color"></div>
-            `;
-
-            show_palette_button.addEventListener("click", function() {
-                if (!palette.style.height || palette.style.height == '0px') { 
-                    palette.style.height = "calc(74px + 1rem)";
-                    palette.style.paddingTop = "1rem";
-                    show_palette_arrow.style.transform = "rotate(0deg)";
-                } else {
-                    palette.style.height = "0px";
-                    palette.style.paddingTop = "0";
-                    show_palette_arrow.style.transform = "rotate(-180deg)";
-                }
+            show_palette_button.addEventListener( "click", function() {
+                const is_hidden = !palette.style.height || palette.style.height === '0px';
+                const height = is_hidden ? 'calc(74px + 1rem)' : '0px';
+                const paddingTop = is_hidden ? '1rem' : '0';
+                const rotation = is_hidden ? '0deg' : '-180deg';
+                
+                palette.style.height = height;
+                palette.style.paddingTop = paddingTop;
+                show_palette_arrow.style.transform = `rotate(${ rotation })`;
             });
 
-            ( p.title !== null && p.title !== undefined ) && ( container.appendChild(title_h2) );
-            ( p.title == "Color" || class_type == "gradient_palette" ) ? (palette.style.height = "calc(74px + 1rem)", palette.style.paddingTop = "1rem") : active_color_div.appendChild( show_palette_button );
+            ( p.title || false ) && container.appendChild(title_h2);
+            ( p.title == "Color" || class_type == "gradient_palette" ) && (
+                palette.style.height = "calc( 74px + 1rem )",
+                palette.style.paddingTop = "1rem"
+            ) || active_color_div.appendChild(  show_palette_button );
+
             //( class_type == "gradient_palette" ) && ( container.appendChild( gradient ) );
 
             container.appendChild(about);
@@ -520,7 +293,7 @@ class Palette {
                 palette = container.querySelector(".palette");
             }
 
-            const colors_dom = palette.querySelectorAll("div.color");
+            const colors_dom = Array.from( palette.querySelectorAll( "div.color" ) );
 
             let gradient;
             if ( class_type == "color_palette" ) {
@@ -541,20 +314,22 @@ class Palette {
             }
 
             let active_color = colors_dom[4];
-            
-            Array.from( colors_dom ).forEach( color_el => {
-                const shade_tint_color = new Color( {r : color_el.red, g : color_el.green, b : color_el.blue} );
 
-                color_el.style.backgroundColor = `rgb( ${shade_tint_color.rgb.r}, ${shade_tint_color.rgb.g}, ${shade_tint_color.rgb.b} )`;
+            colors_dom.forEach( color_el => {
+                const { red, green, blue } = color_el;
+                const shade_tint_color = new Color( { r : red, g : green, b : blue } );
+
+                color_el.style.backgroundColor = `rgb(${ shade_tint_color.rgb.r }, ${ shade_tint_color.rgb.g }, ${ shade_tint_color.rgb.b })`;
                 color_el.classList.remove( "clicked" );
-                
-                color_el.addEventListener( "click", function() {
+
+                color_el.addEventListener( "click", () => {
                     active_color.classList.remove( "clicked" );
                     active_color = color_el;
                     active_color.classList.add( "clicked" );
-                    create_labels( active_color, shade_tint_color );
+                    create_labels(active_color, shade_tint_color);
                 });
             });
+
 
             const grad_middle = new Color( { r : colors_dom[4].red, g : colors_dom[4].green, b : colors_dom[4].blue } );
             
@@ -568,101 +343,102 @@ class Palette {
     }
 }
 
-function color_palette( red1, green1, blue1, red2, green2, blue2 ) {
+class Color {
+    constructor( rgb ) {
+
+        const rgb_to_hex = ( red, green, blue ) => {
+            red = parseInt( red ).toString( 16 );
+            green = parseInt( green ).toString( 16 );
+            blue = parseInt( blue ).toString( 16 );
+            
+            red.length == 1 && ( red = "0" + red ); 
+            green.length == 1 && ( green = "0" + green ); 
+            blue.length == 1 && ( blue = "0" + blue ); 
+
+            return red + green + blue;
+        }
+
+        const get_cmyk = ( red, green, blue ) => {
+            const cmy = {
+                cyan: ( red === 0 ) ? 100 : ( 1 - ( red / 255 ) ),
+                magenta: ( green === 0 ) ? 100 : ( 1 - ( green / 255 ) ),
+                yellow: ( blue === 0 ) ? 100 : ( 1 - ( blue / 255 ) )
+            };
+
+            const minimum = Math.min( cmy.cyan, cmy.magenta, cmy.yellow );
+            const black = ( red === 0 && green === 0 && blue === 0 ) ? 100 : Math.round( minimum * 100 );
+
+            Object.keys( cmy ).forEach( function( color_type ) {
+                cmy[ color_type ] = ( red === 0 && green === 0 && blue === 0 ) ? 0 : Math.round( ( cmy[ color_type ] - minimum ) / ( 1 - minimum ) * 100 );
+            });
+
+
+            return {
+                c : cmy.cyan,
+                m : cmy.magenta,
+                y : cmy.yellow,
+                k : black
+            };
+        }
+
+        const hsl = get_hsl( rgb.r, rgb.g, rgb.b );
+
+        return {
+            hex : rgb_to_hex( rgb.r, rgb.g, rgb.b ),
+            hsl : hsl,
+            cmyk : get_cmyk(rgb.r, rgb.g, rgb.b),
+            rgb : rgb
+        };
+    }
+}
+
+function color_palette( colors ) {
 
     const colors_section = document.querySelector( "section#colors_section" );
-    const color1 = new Color( { r : red1, g : green1, b : blue1 } );
-    const color2 = new Color( { r : red2, g : green2, b : blue2 } );
-    const comp1 = new Color( complement( red1, green1, blue1 ) );
-    
-    let palettes_dom;
-    let reset;
+    const color1 = new Color( colors[0] );
+    const color2 = new Color( colors[1] );
+
+    const comp1 = new Color( complement( color1.rgb ) );  
+    const comp2 = new Color( complement( color2.rgb ) );
+
+    const triad1 = new Color( triadic_one( color1.rgb ) );
+    const triad2 = new Color( triadic_two( color1.rgb ) );
+
+    const tetrad1 = new Color( tetrad( color1.rgb, 1 ) );
+    const tetrad2 = new Color( tetrad( color1.rgb, 2 ) );
 
     const cp = "color_palette";
     const gp = "gradient_palette";
 
-    let class_type;
+    const palette_type = colors[1].r == null && cp || gp;
 
-    if ( red2 == null ) {
-        class_type = cp;
-    } else {
-        class_type = gp;
-    }
+    colors_section.classList.remove("section-hidden");
 
-    const button_clicked = class_type;
+    const palettes_dom = [
+        { color1 : color1, color2 : null, type: cp, section : cp, title : "Color" },
+        { color1 : comp1, color2 : null, type: cp, section : cp, title : "Complement" },
 
-    if ( class_type == "color_palette" ) {
+        { color1 : triad1, color2 : null, type: cp, section : cp, title : "Triadic" },
+        { color1 : triad2, color2 : null, type: cp, section : cp, title : null },
 
-        palettes_dom = [
-            {   title : "Color", 
-                color1 : color1,
-                color2 : null,
-                type : cp 
-            }, 
-            {   title : "Complement", 
-                color1 : comp1,
-                type : cp 
-            }, 
-            {   title : "Triadic", 
-                color1 : new Color( triadic_one( red1, green1, blue1 ) ),
-                color2 : null,
-                type : cp 
-            }, 
-            {   title: null,
-                color1 : new Color( triadic_two( red1, green1, blue1 ) ),
-                color2 : null,
-                type : cp 
-            }, 
-            {   title : "Tetradic", 
-                color1 : new Color( tetrad( red1, green1, blue1, 1 ) ),
-                color2 : null,
-                type : cp  
-            }, 
-            {   title : null,
-                color1: new Color( tetrad( red1, green1, blue1, 2 ) ),
-                color2 : null,
-                type : cp 
-            }
-        ];
-
-    } else {
-        const comp1 = new Color( complement( red1, green1, blue1 ) );
-        const comp2 = new Color( complement( red2, green2, blue2 ) );
-        palettes_dom = [
-            {   title : "Gradient", 
-                color1 : color1, 
-                color2 : color2,
-                type : gp
-            },
-            {   color1 : color1,
-                type : cp 
-            },
-            {   color1 : color2,
-                type : cp  
-            },
-            {   title : "Complement", 
-                color1 : comp1, 
-                color2 : comp2,
-                type : gp
-            },
-            {   color1 : comp1,
-                type : cp  
-            },
-            {   color1 : comp2,
-                type : cp 
-            }
-        ];
-    }
+        { color1 : tetrad1, color2 : null, type: cp, section : cp, title : "Tetradic" },
+        { color1 : tetrad2, color2 : null, type: cp, section : cp, title : null },
+        { color1 : comp1, color2 : null, type: cp, section : cp, title : null },
     
-    if ( document.querySelector("div.container") == null ) {
+        { color1 : color1, color2 : color2, type: gp, section : gp, title : "Gradient" },
+        { color1 : color1, color2 : null, type: cp, section : gp, title : null },
+        { color1 : color2, color2 : null, type: cp, section : gp, title : null },
+
+        { color1 : comp1, color2 : comp2, type: gp, section : gp, title : "Complement" },
+        { color1 : comp1, color2 : null, type: cp, section : gp, title : null },
+        { color1 : comp2, color2 : null, type: cp, section : gp, title : null }
+    ].filter( ( p ) => p.section === palette_type );
+    
+    let reset = (document.querySelector("div.container") !== null);
+
+    if ( reset && palette_type !== document.querySelector( ".palette" ).classList[ 0 ] ) {
         reset = false;
-    } else {
-        reset = true;
-        
-        if ( button_clicked !== document.querySelector(".palette").classList[0] ) {
-            reset = false;
-            colors_section.innerHTML = "";
-        }
+        colors_section.innerHTML = "";
     }
 
     palettes_dom.forEach( (p, index) => {
@@ -670,102 +446,80 @@ function color_palette( red1, green1, blue1, red2, green2, blue2 ) {
     });
 }
 
-const input_to_colors = ( input, color_type ) => {
-    const hex_to_rgb = ( hex ) => {
-        ( hex.length == 3 ) && ( hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2] );
-        
-        return {
-            r : parseInt( hex.substring( 0, 2 ), 16 ),
-            g : parseInt( hex.substring( 2, 4 ), 16 ),
-            b : parseInt( hex.substring( 4, 6 ), 16 )
-        };
-    }
+const take_input = ( input_type ) => {
+    const input_fields = document.getElementById( input_type ).querySelectorAll(".color_input");
+    const inputs = [];
 
-    let rgb = { r : null, g : null, b : null };
+    input_fields.forEach( ( field ) => {
+        inputs.push( field.value );
+    });
 
-    if ( color_type == "hex" ) {
-        input = input.replace( /[^a-z0-9]/gi, '' );
-        rgb = hex_to_rgb( input );
-    }
-    else {
-        input = input.match( /\d+/g ).map( Number );
-        Object.keys( rgb ).forEach( function ( key, index ) {
-            rgb[ key ] = input[ index ];
-        });
-    }
-
-    return rgb;
+    return inputs;
 }
-    
-function begin( input_type, button ) {
-    const color_containers = document.querySelectorAll(".color_palette");
-    const gradient_palette = document.querySelectorAll(".gradient_palette");
-    const inputs = document.getElementById(input_type).querySelectorAll(".color_input");
 
+const input_to_colors = ( inputs ) => {
+    const inputs_array = inputs.inputs;
+    const colors = [];
+
+    inputs_array.forEach( input => {
+        const hex = input.hex;
+        const rgb = input.rgb;
+        input = input.input;
+        if ( hex ) {
+            // Remove hash symbol, if present
+            const hex = input.startsWith('#') ? input.slice(1) : input;
+            
+            // If input is 3 characters, duplicate each character to get 6-character hex
+            const fullHex = hex.length === 3 ? hex.split('').map(char => char + char).join('') : hex;
+            
+            // Convert hex to decimal values
+            const red = parseInt(fullHex.slice(0, 2), 16);
+            const green = parseInt(fullHex.slice(2, 4), 16);
+            const blue = parseInt(fullHex.slice(4, 6), 16);
+            
+            // Return RGB values as an object
+            colors.push( { r: red, g: green, b: blue } );
+        } else {
+            const numbers = input.match(/\d+/g);
+            const r = parseInt(numbers[0]);
+            const g = parseInt(numbers[1]);
+            const b = parseInt(numbers[2]);
+
+            colors.push( { r, g, b } );
+        }
+    });
+    
+    ( !colors[1] ) && ( colors.push( { r : null, g : null, b : null } ) );
+
+    return colors;
+}
+
+const validate_inputs = ( input_array, slide ) => {
     const hex_re = /^#?([0-9A-F]{3}){1,2}$/i;
     const rgb_re = /^(rgb)?\(?([01]?\d\d?|2[0-4]\d|25[0-5])((\,)|(\ )|(\,( )))([01]?\d\d?|2[0-4]\d|25[0-5])((\,)|(\ )|(\,( )))(([01]?\d\d?|2[0-4]\d|25[0-5])\)?)$/;
-    const validate_input = ( input, hex_re, rgb_re ) => ( input.match( hex_re ) || input.match( rgb_re ) );
 
-    let color_type;
-    let colors = {};
-    let blend;
-    let invalid_code = "";
-    let class_type;
+    const valid = input_array
+        .map( input => {
+            const hex = hex_re.test( input );
+            const rgb = rgb_re.test( input );
+            return { input, hex, rgb };
+        })
+        .filter( ( { hex, rgb } ) => !( hex || rgb ) )
+        .reduce( ( acc, { input }, index ) => {
+            return acc + ( index > 0 ? ', ' : '' ) + input;
+        }, '' );
 
-    error_message( "hide" );
+    const expected_length = { "search_slide": 1, "blend_slide": 2 }[ slide ];
+    const valid_length = input_array.length === expected_length;
 
-    if ( input_type != "random_slide" ) {
+    return {
+        valid : valid === '' && valid_length,
 
-        ( input_type == "search_slide" ) ? blend = false : blend = true;
-        
-        inputs.forEach( ( field, index ) => {
-            const input = field.value;
-            
-            if ( input ) {
-                if ( validate_input( input, hex_re, rgb_re ) ) {
-                    ( input.match( hex_re ) ) ? color_type = "hex" : color_type = "rgb";
-                    colors[ index ] = input_to_colors( input, color_type );
-                } else {
-                    ( blend == true ) ? invalid_code = "blend_invalid" : invalid_code = "search_invalid";
-                }
-            } else {
-                //  if not input
-                ( blend == true ) ? invalid_code = "blend_empty" : invalid_code = "search_empty";
-            }
-
-        });
-
-    } else {
-        colors[0] = {
-            r : ~~( Math.random() * 255 ),
-            g : ~~( Math.random() * 255 ),
-            b : ~~( Math.random() * 255 )
-        };
-
-        if ( button.getAttribute("id") == "random_gradient" ) {
-            blend = true;
-            colors[1] = {
-                r : ~~( Math.random() * 255 ),
-                g : ~~( Math.random() * 255 ),
-                b : ~~( Math.random() * 255 )
-            };
-        }
-    }
-
-    if ( invalid_code == "" ) {
-        if ( blend ) {
-            color_palette( colors[0].r, colors[0].g, colors[0].b, colors[1].r, colors[1].g, colors[1].b );
-            document.querySelector("section#colors_section").classList.remove("section-hidden");
-            scroll();
-        } else {
-            color_palette( colors[0].r, colors[0].g, colors[0].b, null, null, null );
-            document.querySelector("section#colors_section").classList.remove("section-hidden");
-            scroll();
-        }
-    } else {
-        error_message( invalid_code );
-    }
-}
+        inputs : input_array.map( input => ( { 
+            input, hex: hex_re.test( input ), rgb : rgb_re.test( input ) 
+        }))
+    };
+};
 
 const reset_fields = () => {
     const search_inputs = document.querySelectorAll("div#search_slide input");
@@ -813,64 +567,95 @@ const error_message = ( code ) => {
             error_dom.style.opacity = 0;
     }
 }
+
+const handle_input = ( field ) => {
+    const colors = [];
+
+    if ( field.type === "search") {
+
+        const slide = field.slide;
+        const input_array = take_input( slide );
+        const valid = validate_inputs( input_array, slide );
+
+        if ( valid.valid ) {
+            colors.push(...input_to_colors( valid ));
+            color_palette( colors );
+            scroll();
+        } else {
+            console.log("not valid");
+        }
+
+    } else {
+        colors.push({
+            r: ~~( Math.random() * 255 ),
+            g: ~~( Math.random() * 255 ),
+            b: ~~( Math.random() * 255 ),
+        });
+
+        if (field.number === 2) {
+            colors.push({
+                r: ~~( Math.random() * 255 ),
+                g: ~~( Math.random() * 255 ),
+                b: ~~( Math.random() * 255 ),
+            });
+        } else {
+            colors.push( { r : null, g : null, b : null } );
+        }
+
+        color_palette( colors );
+        scroll();
+    }
+};
     
 function init() {
     const input_fields = document.querySelectorAll("input.color_input");
-    const color_palettes = document.querySelectorAll("div.color_palette");
-    const buttons = [
-        document.getElementById("search_button"),
-        document.getElementById("blend_button"),
-        document.getElementById("random_button"),
-        document.getElementById("random_gradient")
-    ];
 
     document.querySelector("section#colors_section").classList.add("section-hidden");
 
-    const get_slide_name = ( field ) => {
-        let slide;
+    const slide_name = ( field ) => {
+        const slide = field.closest( ".slide" );
+        return slide ? slide.id : field.parentNode.id;
+    };
 
-        if ( field.parentNode.parentNode.getAttribute("class") == "slide" ) {
-            slide = field.parentNode.parentNode.getAttribute("id");
-        }
-        else if ( field.parentNode.parentNode.parentNode.getAttribute("class") == "slide" ) {
-            slide = field.parentNode.parentNode.parentNode.getAttribute("id");
-        }
-        else {
-            slide = field.parentNode.getAttribute("id");
-        }
+    const search_button = document.getElementById("search_button");
+    const blend_button = document.getElementById("blend_button");
+    const random_button = document.getElementById("random_button");
+    const random_gradient = document.getElementById("random_gradient");
 
-        return slide;
-    }
-    
-    //  Control input
+    const buttons = [
+        { name : search_button, type : "search", number : 1 },
+        { name : blend_button, type : "search", number : 2 },
+        { name : random_button, type : "random", number : 1 },
+        { name : random_gradient, type : "random", number : 2 }
+    ];
+
+
+
+    buttons.forEach( ( button ) => {
+        button.name.addEventListener("click", function() {
+
+            button.slide = slide_name( button.name );
+            handle_input( button );
+            input_fields.forEach(field => { field.value = "" });
+
+        });
+    });
+
     input_fields.forEach(field => {
         field.addEventListener("keydown", event => {
             let key = event.charCode || event.keyCode;
-            //  Enter key
             if (key === 13) {
-                const slide = get_slide_name( field );
-                begin( slide, null );
-                //  Clear all input
-                input_fields.forEach(field => {
-                    field.value = "";
-                });
+
+                field.slide = slide_name( field );
+                field.type = "search";
+
+                handle_input( field );
+                field.value = "";
             }
         });
     });
 
-    buttons.forEach(button => {
-        let slide = button.parentNode.getAttribute("id");
-        button.addEventListener("click", function() {
-            begin( slide, button );
-            //  Clear all input
-            input_fields.forEach( field => {
-                field.value = "";
-            });
-        });
-    });
-
     reset_fields();
-
     error_message( "hide" );
 }
 

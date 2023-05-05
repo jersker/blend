@@ -217,7 +217,7 @@ div#helper_card {
 
     color:lightgray;
     background-color:rgba(30, 30, 30, 0.7);
-    backdrop-filter:blur(8px);
+    backdrop-filter:blur(12px);
 
     border:1px solid rgba(255, 255, 255, 0.3);
     border-radius:@main_radius;
@@ -353,6 +353,12 @@ div#container {
     display:flex;
     flex-direction:column;
 
+    -webkit-transition:all 0.5s;
+    -moz-transition:all 0.5s;
+    -ms-transition:all 0.5s;
+    -o-transition:all 0.5s;
+    transition:all 0.5s;
+
     div#help {
         color:gray;
         display:flex;
@@ -360,6 +366,12 @@ div#container {
         align-items:center;
         gap:@main_margin;
         margin-bottom:@main_margin;
+
+        -webkit-transition:all 0.5s;
+        -moz-transition:all 0.5s;
+        -ms-transition:all 0.5s;
+        -o-transition:all 0.5s;
+        transition:all 0.5s;
 
         svg#help_icon {
             color:@blend_color_one_light;
@@ -910,8 +922,10 @@ footer {
     }
 
     section#colors_section {
-        div.palette_container {
-            width:60%;
+        div.container {
+            width:50%;
+            margin-left:auto;
+            margin-right:auto;
         }
     }
 }
@@ -938,8 +952,10 @@ footer {
     }
 
     section#colors_section {
-        div.palette_container {
-            width:80%;
+        div.container {
+            width:70%;
+            margin-left:auto;
+            margin-right:auto;
         }
     }
 }
@@ -967,7 +983,7 @@ footer {
     }
 
     section#colors_section {
-        div.palette_container {
+        div.container {
             width:100%;
         }
     }
