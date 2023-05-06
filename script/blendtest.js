@@ -570,27 +570,24 @@ const error_message = ( code, slide ) => {
 
 const handle_input = ( field ) => {
     const colors = [];
+    const input_array = take_input( field.slide );
 
-    if ( field.type === "search") {
+    if ( field.slide !== "random_slide" ) {
 
-        const slide = field.slide;
+        if ( input_array[0] !== null ) {   
 
-        if ( field.value ) {   
-            const input_array = take_input( slide );
-            const valid = validate_inputs( input_array, slide );
+            const valid = validate_inputs( input_array, field.slide );
 
             if ( valid.valid ) {
                 colors.push(...input_to_colors( valid ));
                 color_palette( colors );
                 scroll();
             } else {
-                console.log("error: input invalid");
+                error_message( "search_invalid" );
             }
         } else {
-            console.log(slide);
             console.log("error: nothing there");
         }
-
 
     } else {
         colors.push({
@@ -599,7 +596,7 @@ const handle_input = ( field ) => {
             b: ~~( Math.random() * 255 ),
         });
 
-        if (field.number === 2) {
+        if ( field.number === 2 ) {
             colors.push({
                 r: ~~( Math.random() * 255 ),
                 g: ~~( Math.random() * 255 ),
@@ -635,27 +632,25 @@ function init() {
             type : "random", number : 2 }
     ];
 
-    buttons.forEach( ( button ) => {
-        button.dom.addEventListener("click", function() {
-
-            button.slide = slide_name( button.dom );
-            handle_input( button );
-            input_fields.forEach( field => { field.value = "" } );
-
-        });
-    });
-
     input_fields.forEach(field => {
+        field.type = "search";
+        field.slide = slide_name( field );
+
         field.addEventListener("keydown", event => {
             let key = event.charCode || event.keyCode;
             if (key === 13) {
-
-                field.slide = slide_name( field );
-                field.type = "search";
-
                 handle_input( field );
-                field.value = "";
+                input_fields.forEach( field => { field.value = "" } );
             }
+        });
+    });
+
+    buttons.forEach( ( button ) => {
+        button.slide = slide_name( button.dom );
+        button.dom.addEventListener("click", function() {
+            handle_input( button );
+            input_fields.forEach( field => { field.value = "" } );
+
         });
     });
 
