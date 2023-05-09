@@ -629,8 +629,6 @@ function init() {
         { name : random_gradient, type : "random", number : 2 }
     ];
 
-
-
     buttons.forEach( ( button ) => {
         button.name.addEventListener("click", function() {
 

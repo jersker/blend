@@ -611,7 +611,7 @@ const handle_input = ( field ) => {
     }
 };
     
-function init() {
+const init = () => {
     const input_fields = document.querySelectorAll("input.color_input");
 
     document.querySelector("section#colors_section").classList.add("section-hidden");
@@ -624,13 +624,13 @@ function init() {
     const buttons = [
         {   dom : document.getElementById("search_button"), 
             type : "search", number : 1 },
-        {   dom : document.getElementById("blend_button"), 
+        {   dom : document.getElementById("blend_button_dummy"), 
             type : "search", number : 2 },
         {   dom : document.getElementById("random_button"), 
             type : "random", number : 1 },
-        {   dom : document.getElementById("random_gradient"), 
+        {   dom : document.getElementById("random_gradient_dummy"), 
             type : "random", number : 2 }
-    ];
+    ];    
 
     input_fields.forEach(field => {
         field.type = "search";
@@ -638,7 +638,11 @@ function init() {
 
         field.addEventListener("keydown", event => {
             let key = event.charCode || event.keyCode;
-            if (key === 13) {
+
+            if ( key === 9 && field.slide == "search_slide" ) {
+                event.preventDefault();
+            }
+            if ( key === 13 ) {
                 handle_input( field );
                 input_fields.forEach( field => { field.value = "" } );
             }

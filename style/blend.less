@@ -216,7 +216,7 @@ div#helper_card {
     left:50%;
 
     color:lightgray;
-    background-color:rgba(30, 30, 30, 0.7);
+    background-color:rgba(30, 30, 30, 0.9);
     backdrop-filter:blur(12px);
 
     border:1px solid rgba(255, 255, 255, 0.3);
@@ -305,7 +305,7 @@ div#helper_card {
 
                 li table {
                     width:100%;
-                    background-color:rgba(255, 255, 255, 0.1);
+                    background-color:#333;
                     border:1px solid rgba(255, 255, 255, 0.3);
                     border-radius:@main_radius;
                     border-collapse:separate;
@@ -576,7 +576,7 @@ div#container {
                     }
                 }
 
-                div.button {
+                button {
                     color:@dark;
 
                     display:block;
@@ -596,83 +596,93 @@ div#container {
                     &:hover {
                         cursor:pointer;
                     }
-                }
 
-                div#search_button {
-                    background-color:@blend_color_one_light;
-                }
+                    &#search_button {
+                        background-color:@blend_color_one_light;
+                        border:1px solid transparent;
 
-                div#blend_button {
-                    background:@blend_color_one_light;
-                    background:-webkit-linear-gradient(top left, @blend_color_one_light, @blend_color_two_light);
-                    background:-moz-linear-gradient(top left, @blend_color_one_light, @blend_color_two_light);
-                    background:linear-gradient(to bottom right, @blend_color_one_light, @blend_color_two_light);
-                    
-                    border:1px solid @blend_color_one_light;
-                    opacity:1;
-                    z-index:1;
-                    
-                    -webkit-transition:opacity 0.2s, border 0.2s;
-                    -ms-transition:opacity 0.2s, border 0.2s;
-                    -o-transition:opacity 0.2s, border 0.2s;
-                    transition:opacity 0.2s, border 0.2s;
-                    
-                    &:hover {
-                        opacity:0;
+                        &:hover {
+                            background-color:@blend_color_two_light;
+                        }
                     }
-                }
-                
-                div#blend_button_new {
-                    top:50%;
-                    right:@main_padding;
-                    transform:translateY(-50%);
-                    
-                    background:@blend_color_two_light;
-                    background:-webkit-linear-gradient(top left, @blend_color_two_light, @blend_color_one_light);
-                    background:-moz-linear-gradient(top left, @blend_color_two_light, @blend_color_one_light);
-                    background:linear-gradient(to bottom right, @blend_color_two_light, @blend_color_one_light);
-                    
-                    border:1px solid @blend_color_two_light;
-                    
-                    position:absolute;
-                    z-index:0;
-                }
 
-                div#random_button {
-                    background:@blend_color_two_light;
-                }
-
-                div#random_gradient {
-                    background:@blend_color_one_light;
-                    background:-webkit-linear-gradient(top left, @blend_color_one_light, @blend_color_two_light);
-                    background:-moz-linear-gradient(top left, @blend_color_one_light, @blend_color_two_light);
-                    background:linear-gradient(to bottom right, @blend_color_one_light, @blend_color_two_light);
-                    
-                    border:1px solid @blend_color_one_light;
-                    opacity:1;
-                    z-index:1;
-                    
-                    -webkit-transition:opacity 0.2s, border 0.2s;
-                    -ms-transition:opacity 0.2s, border 0.2s;
-                    -o-transition:opacity 0.2s, border 0.2s;
-                    transition:opacity 0.2s, border 0.2s;
-                    
-                    &:hover {
-                        opacity:0;
+                    &#blend_button_dummy {
+                        background:@blend_color_one_light;
+                        background:-webkit-linear-gradient(top left, @blend_color_one_light, @blend_color_two_light);
+                        background:-moz-linear-gradient(top left, @blend_color_one_light, @blend_color_two_light);
+                        background:linear-gradient(to bottom right, @blend_color_one_light, @blend_color_two_light);
+                        
+                        border:none;
+                        opacity:1;
+                        z-index:1;
+                        
+                        -webkit-transition:opacity 0.2s, border 0.2s;
+                        -ms-transition:opacity 0.2s, border 0.2s;
+                        -o-transition:opacity 0.2s, border 0.2s;
+                        transition:opacity 0.2s, border 0.2s;
+                        
+                        &:hover {
+                            opacity:0;
+                        }
                     }
-                }
-                
-                div#random_gradient_new {
-                    bottom:calc( @main_padding * 1.5 );
-                    background:@blend_color_two_light;
-                    background:-webkit-linear-gradient(top left, @blend_color_two_light, @blend_color_one_light);
-                    background:-moz-linear-gradient(top left, @blend_color_two_light, @blend_color_one_light);
-                    background:linear-gradient(to bottom right, @blend_color_two_light, @blend_color_one_light);
-                    
-                    border:1px solid @blend_color_two_light;
-                    
-                    position:absolute;
-                    z-index:0;
+
+                    &#blend_button {
+                        top:50%;
+                        right:calc( @main_padding + 2.5px);
+                        transform:translateY( -50% );
+                        
+                        background:@blend_color_two_light;
+                        background:-webkit-linear-gradient(top left, @blend_color_two_light, @blend_color_one_light);
+                        background:-moz-linear-gradient(top left, @blend_color_two_light, @blend_color_one_light);
+                        background:linear-gradient(to bottom right, @blend_color_two_light, @blend_color_one_light);
+                        
+                        border:none;
+                        
+                        position:absolute;
+                        z-index:0;
+                    }
+
+                    &#random_button {
+                        background:@blend_color_two_light;
+                        border:1px solid transparent;
+
+                        &:hover {
+                            background-color:@blend_color_one_light;
+                        }
+                    }
+
+                    &#random_gradient_dummy {
+                        background:@blend_color_one_light;
+                        background:-webkit-linear-gradient(top left, @blend_color_one_light, @blend_color_two_light);
+                        background:-moz-linear-gradient(top left, @blend_color_one_light, @blend_color_two_light);
+                        background:linear-gradient(to bottom right, @blend_color_one_light, @blend_color_two_light);
+                        
+                        border:1px solid transparent;
+                        opacity:1;
+                        z-index:1;
+                        
+                        -webkit-transition:opacity 0.2s, border 0.2s;
+                        -ms-transition:opacity 0.2s, border 0.2s;
+                        -o-transition:opacity 0.2s, border 0.2s;
+                        transition:opacity 0.2s, border 0.2s;
+                        
+                        &:hover {
+                            opacity:0;
+                        }
+                    }
+
+                    &#random_gradient {
+                        bottom:calc( (@main_padding * 2) + 0.5px );
+                        background:@blend_color_two_light;
+                        background:-webkit-linear-gradient(top left, @blend_color_two_light, @blend_color_one_light);
+                        background:-moz-linear-gradient(top left, @blend_color_two_light, @blend_color_one_light);
+                        background:linear-gradient(to bottom right, @blend_color_two_light, @blend_color_one_light);
+                        
+                        border:1px solid transparent;
+                        z-index:0;
+                        
+                        position:absolute;
+                    }
                 }
             } /* slide */
         }   
@@ -883,9 +893,55 @@ footer {
 
     padding:calc(@main_padding * 2);
 
+    div#footer_info {
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:calc( @main_margin * 2 );
+        margin:0 auto @main_margin auto;
+
+        div#icons {
+            width:30%;
+
+            div#git {
+                width:60px;
+                height:60px;
+                position:relative;
+
+                svg.main_icon {
+                    width:100%;
+                    height:100%;
+                    z-index:2;
+                }
+                svg.dummy_icon {
+                    width:100%;
+                    height:100%;
+                    position:absolute;
+                    top:0;
+                    left:0;
+                    z-index:0;
+
+                    -webkit-transition:all 0.3s;
+                    -moz-transition:all 0.3s;
+                    -ms-transition:all 0.3s;
+                    -o-transition:all 0.3s;
+                    transition:all 0.3s;
+
+                    &:hover {
+                        opacity:0;
+                    }
+                }
+            }
+        }
+
+        span {
+        }
+
+    } 
+
     div#copyright {
         margin-top:@main_margin;
-        padding:@main_padding;
+        padding:calc( @main_padding * 2 );
         text-align:center;
         border-top:1px solid gray;
     }
@@ -928,6 +984,12 @@ footer {
             margin-right:auto;
         }
     }
+
+    footer {
+        div#footer_info {
+            width:auto;
+        }
+    }
 }
 
 /* TABLET */
@@ -958,6 +1020,12 @@ footer {
             margin-right:auto;
         }
     }
+
+    footer {
+        div#footer_info {
+            width:auto;
+        }
+    }
 }
 
 /* MOBILE */
@@ -985,6 +1053,12 @@ footer {
     section#colors_section {
         div.container {
             width:100%;
+        }
+    }
+
+    footer {
+        div#footer_info {
+            width:auto;
         }
     }
 }
