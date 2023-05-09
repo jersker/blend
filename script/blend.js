@@ -543,7 +543,7 @@ const reset_fields = () => {
     });
 }
 
-const error_message = ( code ) => {
+const error_message = ( code, slide ) => {
     const error_dom = document.getElementById("error_message");
 
     switch ( code ) {
@@ -570,19 +570,23 @@ const error_message = ( code ) => {
 
 const handle_input = ( field ) => {
     const colors = [];
+    const input_array = take_input( field.slide );
 
-    if ( field.type === "search") {
+    if ( field.slide !== "random_slide" ) {
 
-        const slide = field.slide;
-        const input_array = take_input( slide );
-        const valid = validate_inputs( input_array, slide );
+        if ( input_array[0] !== null ) {   
 
-        if ( valid.valid ) {
-            colors.push(...input_to_colors( valid ));
-            color_palette( colors );
-            scroll();
+            const valid = validate_inputs( input_array, field.slide );
+
+            if ( valid.valid ) {
+                colors.push(...input_to_colors( valid ));
+                color_palette( colors );
+                scroll();
+            } else {
+                error_message( "search_invalid" );
+            }
         } else {
-            console.log("not valid");
+            console.log("error: nothing there");
         }
 
     } else {
@@ -592,7 +596,7 @@ const handle_input = ( field ) => {
             b: ~~( Math.random() * 255 ),
         });
 
-        if (field.number === 2) {
+        if ( field.number === 2 ) {
             colors.push({
                 r: ~~( Math.random() * 255 ),
                 g: ~~( Math.random() * 255 ),
@@ -607,7 +611,7 @@ const handle_input = ( field ) => {
     }
 };
     
-function init() {
+const init = () => {
     const input_fields = document.querySelectorAll("input.color_input");
 
     document.querySelector("section#colors_section").classList.add("section-hidden");
@@ -617,39 +621,40 @@ function init() {
         return slide ? slide.id : field.parentNode.id;
     };
 
-    const search_button = document.getElementById("search_button");
-    const blend_button = document.getElementById("blend_button");
-    const random_button = document.getElementById("random_button");
-    const random_gradient = document.getElementById("random_gradient");
-
     const buttons = [
-        { name : search_button, type : "search", number : 1 },
-        { name : blend_button, type : "search", number : 2 },
-        { name : random_button, type : "random", number : 1 },
-        { name : random_gradient, type : "random", number : 2 }
-    ];
+        {   dom : document.getElementById("search_button"), 
+            type : "search", number : 1 },
+        {   dom : document.getElementById("blend_button_dummy"), 
+            type : "search", number : 2 },
+        {   dom : document.getElementById("random_button"), 
+            type : "random", number : 1 },
+        {   dom : document.getElementById("random_gradient_dummy"), 
+            type : "random", number : 2 }
+    ];    
 
-    buttons.forEach( ( button ) => {
-        button.name.addEventListener("click", function() {
+    input_fields.forEach(field => {
+        field.type = "search";
+        field.slide = slide_name( field );
 
-            button.slide = slide_name( button.name );
-            handle_input( button );
-            input_fields.forEach(field => { field.value = "" });
+        field.addEventListener("keydown", event => {
+            let key = event.charCode || event.keyCode;
 
+            if ( key === 9 && field.slide == "search_slide" ) {
+                event.preventDefault();
+            }
+            if ( key === 13 ) {
+                handle_input( field );
+                input_fields.forEach( field => { field.value = "" } );
+            }
         });
     });
 
-    input_fields.forEach(field => {
-        field.addEventListener("keydown", event => {
-            let key = event.charCode || event.keyCode;
-            if (key === 13) {
+    buttons.forEach( ( button ) => {
+        button.slide = slide_name( button.dom );
+        button.dom.addEventListener("click", function() {
+            handle_input( button );
+            input_fields.forEach( field => { field.value = "" } );
 
-                field.slide = slide_name( field );
-                field.type = "search";
-
-                handle_input( field );
-                field.value = "";
-            }
         });
     });
 
