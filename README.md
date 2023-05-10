@@ -1,12 +1,13 @@
 <div align="center">
 
 <h1 align="center">
-      <a href="https://github.com/jersker/blend/actions/workflows/static.yml" target="_blank">
+    # BLEND.js
+    <a href="https://github.com/jersker/blend/actions/workflows/static.yml" target="_blank">
         <img src="https://github.com/jersker/blend/actions/workflows/static.yml/badge.svg"><br>
     </a>
 </h1>
 
-# BLEND.js
+
 Search a color code. Retrieve hexadecimal, RGB, and CMYK information, and 
 display their corresponding palettes.
 
