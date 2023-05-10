@@ -8,20 +8,21 @@
     </a>
 </h1>
 
-
-Search a color code. Retrieve hexadecimal, RGB, and CMYK information, and 
+<div align="center">
+Search a color code, or two.
+<br>
+Retrieve relevant hexadecimal, RGB, CMYK, and HSL information, and 
 display their corresponding palettes.
-
-</div align="center">
-
-NOTE: This is currently being migrated from Gitlab. It still needs some love. Give it time.
+</div>
 
 ---
 
+## Usage
+
 > #### Example Formats
-> `DAD`  
-> `#dad`    
-> `DAD357`   
+> `FFF`  
+> `#fff`    
+> `FFFEEE`   
 > `255 255 255`   
 > `255, 255, 255`    
 > `RGB(255, 255, 255)`    
