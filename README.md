@@ -1,7 +1,5 @@
-<div align="center">
-
 <h1 align="center">
-    # BLEND.js
+    BLEND.js
     <br>
     <a href="https://github.com/jersker/blend/actions/workflows/static.yml" target="_blank">
         <img src="https://github.com/jersker/blend/actions/workflows/static.yml/badge.svg"><br>
